@@ -13,7 +13,7 @@ const { closeBrowser } = require('./src/services/pdfService');
 const app = express();
 app.use(express.json());
 
-// ── DB ─────────────────────────────────────────────
+// DB
 const dbPath = process.env.DATABASE_PATH
   || path.join(__dirname, 'data', 'facturas_ia.db');
 
@@ -28,29 +28,27 @@ db.exec(schemaSql);
 
 app.set('db', db);
 
-// ── API ROUTES ─────────────────────────────────────
+// API
 app.use('/api/import', importRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/reports', pdfRoutes);
 
-// ── HEALTH ─────────────────────────────────────────
 app.get('/health', (_req, res) =>
   res.json({ status: 'ok', db: 'sqlite' })
 );
 
-// ── FRONTEND (SAFE STATIC SERVING) ────────────────
+// FRONTEND SAFE
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 
-  // SOLO fallback SPA si dist existe
   app.get(/^(?!\/api).*/, (_req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 
-// ── SHUTDOWN ───────────────────────────────────────
+// SHUTDOWN
 async function shutdown() {
   await closeBrowser();
   db.close();
@@ -60,11 +58,10 @@ async function shutdown() {
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
-// ── START ──────────────────────────────────────────
+// START
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`[server] running on port ${PORT}`);
+  console.log('server running');
 });
 
 module.exports = app;
