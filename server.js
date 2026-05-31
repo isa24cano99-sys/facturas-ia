@@ -8,13 +8,20 @@ const Database = require('better-sqlite3');
 const app = express();
 app.use(express.json());
 
+// ── ASEGURAR CARPETA DATA ─────────────────────────
+const dataDir = path.join(__dirname, 'data');
+
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
 // ── DB ───────────────────────────────
 const dbPath = process.env.DATABASE_PATH
   || path.join(__dirname, 'data', 'facturas_ia.db');
 
 const db = new Database(dbPath);
 
-// schema opcional (solo si existe)
+// ── SCHEMA (OPCIONAL) ─────────────────────────────
 const schemaPath = path.join(__dirname, 'db', 'schema.sql');
 
 if (fs.existsSync(schemaPath)) {
@@ -22,31 +29,32 @@ if (fs.existsSync(schemaPath)) {
   db.exec(schemaSql);
 }
 
+// ── HEALTH CHECK ───────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', db: 'sqlite' });
 });
 
-// ── ENDPOINTS MINIMOS (PARA QUE NO ROMPA) ──
+// ── TEST API ───────────────────────────────────────
 app.get('/api/test', (_req, res) => {
   res.json({ ok: true, message: 'API running' });
 });
 
-// ── SHUTDOWN ─────────────────────────
-process.on('SIGTERM', () => {
-  db.close();
+// ── SHUTDOWN CLEAN ─────────────────────────────────
+function shutdown() {
+  try {
+    db.close();
+  } catch (e) {}
   process.exit(0);
-});
+}
 
-process.on('SIGINT', () => {
-  db.close();
-  process.exit(0);
-});
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
 
-// ── START ────────────────────────────
+// ── START SERVER ───────────────────────────────────
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log('server running on port', PORT);
+  console.log(`server running on port ${PORT}`);
 });
 
 module.exports = app;
