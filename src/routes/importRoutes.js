@@ -1,15 +1,33 @@
+'use strict';
+
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
 const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 
 const router = express.Router();
 const upload = multer({ dest: 'tmp/' });
 
+// ── ID GENERATOR ──
 function id(prefix) {
   return prefix + '_' + crypto.randomUUID();
+}
+
+// ── SAFE GETTER ──
+function get(row, keys, fallback = null) {
+  for (const key of keys) {
+    if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
+      return row[key];
+    }
+  }
+  return fallback;
+}
+
+// ── MONTH FALLBACK ──
+function getMonthFallback() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
 router.post('/', upload.single('file'), (req, res) => {
@@ -28,32 +46,52 @@ router.post('/', upload.single('file'), (req, res) => {
 
     for (const row of rows) {
 
-      const branch_id = row.branch_id;
-      const branch_name = row.branch_name;
-      const branch_manager_name = row.branch_manager_name;
-      const branch_manager_email = row.branch_manager_email;
+      // ── BRANCH DATA (flexible headers) ──
+      const branch_id = get(row, ['branch_id', 'Branch ID', 'branchId']);
+      const branch_name = get(row, ['branch_name', 'Branch Name']);
+      const branch_manager_name = get(row, ['branch_manager_name', 'Manager Name']);
+      const branch_manager_email = get(row, ['branch_manager_email', 'Email']);
 
-      const report_month_id = row.report_month_id;
-      const report_month_display = row.report_month_display;
+      if (!branch_id) continue; // skip invalid rows
 
-      const has_b2b = row.has_b2b ? 1 : 0;
-      const has_offshore = row.has_offshore ? 1 : 0;
+      // ── MONTH DATA (safe) ──
+      const report_month_id =
+        get(row, ['report_month_id', 'month', 'Month']) || getMonthFallback();
 
-      // ── BRANCH ──
+      const report_month_display =
+        get(row, ['report_month_display', 'month_display', 'Month Display']) ||
+        report_month_id;
+
+      const has_b2b = get(row, ['has_b2b']) ? 1 : 0;
+      const has_offshore = get(row, ['has_offshore']) ? 1 : 0;
+
+      // ── SAVE BRANCH ──
       db.prepare(`
         INSERT OR REPLACE INTO branches
         (branch_id, branch_name, branch_manager_name, branch_manager_email)
         VALUES (?, ?, ?, ?)
-      `).run(branch_id, branch_name, branch_manager_name, branch_manager_email);
+      `).run(
+        branch_id,
+        branch_name || '',
+        branch_manager_name || '',
+        branch_manager_email || ''
+      );
 
-      // ── REPORT ──
+      // ── REPORT ID SAFE ──
       const report_id = `${branch_id}_${report_month_id}`;
 
       db.prepare(`
         INSERT OR REPLACE INTO monthly_reports
         (report_id, branch_id, report_month_id, report_month_display, has_b2b, has_offshore)
         VALUES (?, ?, ?, ?, ?, ?)
-      `).run(report_id, branch_id, report_month_id, report_month_display, has_b2b, has_offshore);
+      `).run(
+        report_id,
+        branch_id,
+        report_month_id,
+        report_month_display,
+        has_b2b,
+        has_offshore
+      );
 
       // ── B2B ──
       if (has_b2b) {
@@ -65,18 +103,21 @@ router.post('/', upload.single('file'), (req, res) => {
           id('b2b'),
           report_id,
           'B2B Strategy',
-          row.b2b_monthly_fee || 0
+          get(row, ['b2b_monthly_fee'], 0)
         );
       }
 
-      // ── OFFSHORE (JSON en Excel) ──
-      if (has_offshore && row.offshore_employees) {
-        let employees = [];
+      // ── OFFSHORE ──
+      let employees = [];
 
+      const rawEmployees = get(row, ['offshore_employees']);
+
+      if (has_offshore && rawEmployees) {
         try {
-          employees = typeof row.offshore_employees === 'string'
-            ? JSON.parse(row.offshore_employees)
-            : row.offshore_employees;
+          employees =
+            typeof rawEmployees === 'string'
+              ? JSON.parse(rawEmployees)
+              : rawEmployees;
         } catch (e) {
           employees = [];
         }
@@ -90,10 +131,10 @@ router.post('/', upload.single('file'), (req, res) => {
             id('off'),
             report_id,
             'Offshore Hiring',
-            emp.name,
-            emp.role,
-            emp.salary,
-            emp.indirect_costs,
+            emp?.name || '',
+            emp?.role || '',
+            emp?.salary || 0,
+            emp?.indirect_costs || 0,
             0.20,
             1
           );
@@ -114,7 +155,11 @@ router.post('/', upload.single('file'), (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Import failed' });
+    res.status(500).json({
+      ok: false,
+      error: 'Import failed',
+      details: err.message
+    });
   }
 });
 
