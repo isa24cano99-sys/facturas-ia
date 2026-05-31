@@ -32,6 +32,15 @@ app.use('/api/import',  importRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/reports', pdfRoutes);
 
+// 👇 PEGA ESTO AQUÍ
+const distPath = path.join(__dirname, 'dist');
+
+app.use(express.static(distPath));
+
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok', db: 'sqlite' }));
 
