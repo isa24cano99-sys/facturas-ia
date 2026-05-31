@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "vite build",
     "test:import": "node scripts/runTestImport.js",
     "create:workbook": "node scripts/createTestWorkbook.js"
   },
