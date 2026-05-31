@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 
-const app = express(); // SIEMPRE PRIMERO
+const app = express();
 
 // ── MIDDLEWARE ─────────────────────────
 app.use(cors());
@@ -19,22 +19,37 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// ── DB ───────────────────────────────
+// ── DB INIT (SAFE MODE) ─────────────────────────
 const dbPath =
   process.env.DATABASE_PATH ||
   path.join(__dirname, 'data', 'facturas_ia.db');
 
-const db = new Database(dbPath);
+let db;
 
-// ── SCHEMA ─────────────────────────────
-const schemaPath = path.join(__dirname, 'db', 'schema.sql');
-
-if (fs.existsSync(schemaPath)) {
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  db.exec(schemaSql);
+try {
+  db = new Database(dbPath);
+  console.log('[DB] Connected:', dbPath);
+} catch (err) {
+  console.error('[DB ERROR]', err);
+  process.exit(1);
 }
 
-// guardar db en app (por si luego usas routes)
+// ── SCHEMA (SAFE EXECUTION) ─────────────────────────
+const schemaPath = path.join(__dirname, 'db', 'schema.sql');
+
+try {
+  if (fs.existsSync(schemaPath)) {
+    const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+    db.exec(schemaSql);
+    console.log('[DB] Schema loaded');
+  } else {
+    console.log('[DB] No schema file found (skipping)');
+  }
+} catch (err) {
+  console.error('[DB SCHEMA ERROR]', err);
+}
+
+// ── SHARE DB ─────────────────────────
 app.set('db', db);
 
 // ── ROUTES BASE ─────────────────────
@@ -46,7 +61,7 @@ app.get('/api/test', (_req, res) => {
   res.json({ ok: true, message: 'API running' });
 });
 
-// ── FRONTEND (si tienes React build) ─────────────────────
+// ── FRONTEND STATIC (REACT BUILD) ─────────────────────
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {
@@ -57,18 +72,20 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-// ── SHUTDOWN ─────────────────────────
+// ── SHUTDOWN CLEAN ─────────────────────────
 function shutdown() {
   try {
     db.close();
+    console.log('[DB] closed');
   } catch (e) {}
+
   process.exit(0);
 }
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
-// ── START ────────────────────────────
+// ── START SERVER ────────────────────────────
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
