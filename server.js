@@ -4,7 +4,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-const { createClient } = require('./src/db/client');
+const Database = require('better-sqlite3');
+
 const importRoutes = require('./src/routes/importRoutes');
 const reportRoutes = require('./src/routes/reportRoutes');
 const pdfRoutes = require('./src/routes/pdfRoutes');
@@ -13,22 +14,23 @@ const { closeBrowser } = require('./src/services/pdfService');
 const app = express();
 app.use(express.json());
 
-// DB
+// ── DB ─────────────────────────────────────────────
 const dbPath = process.env.DATABASE_PATH
   || path.join(__dirname, 'data', 'facturas_ia.db');
 
-const db = createClient(dbPath);
+const db = new Database(dbPath);
 
-const schemaSql = fs.readFileSync(
-  path.join(__dirname, 'db', 'schema.sql'),
-  'utf8'
-);
+// SOLO ejecutar schema si existe
+const schemaPath = path.join(__dirname, 'db', 'schema.sql');
 
-db.exec(schemaSql);
+if (fs.existsSync(schemaPath)) {
+  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+  db.exec(schemaSql);
+}
 
 app.set('db', db);
 
-// API
+// ── API ────────────────────────────────────────────
 app.use('/api/import', importRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/reports', pdfRoutes);
@@ -37,7 +39,7 @@ app.get('/health', (_req, res) =>
   res.json({ status: 'ok', db: 'sqlite' })
 );
 
-// FRONTEND SAFE
+// ── FRONTEND SAFE ─────────────────────────────────
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {
@@ -48,7 +50,7 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-// SHUTDOWN
+// ── SHUTDOWN ───────────────────────────────────────
 async function shutdown() {
   await closeBrowser();
   db.close();
@@ -58,8 +60,9 @@ async function shutdown() {
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
-// START
+// ── START ──────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log('server running');
 });
