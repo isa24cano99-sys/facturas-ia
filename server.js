@@ -15,6 +15,15 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+// ── ROOT (ARREGLA "Cannot GET /") ─────────────────
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'running',
+    message: 'Backend is alive',
+    endpoints: ['/health', '/api/test']
+  });
+});
+
 // ── DB ───────────────────────────────
 const dbPath = process.env.DATABASE_PATH
   || path.join(__dirname, 'data', 'facturas_ia.db');
