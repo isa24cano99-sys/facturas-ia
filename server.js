@@ -6,9 +6,9 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 
-const app = express(); // 👈 ESTO SIEMPRE PRIMERO
+const app = express(); // SIEMPRE PRIMERO
 
-// middleware
+// ── MIDDLEWARE ─────────────────────────
 app.use(cors());
 app.use(express.json());
 
@@ -20,8 +20,9 @@ if (!fs.existsSync(dataDir)) {
 }
 
 // ── DB ───────────────────────────────
-const dbPath = process.env.DATABASE_PATH
-  || path.join(__dirname, 'data', 'facturas_ia.db');
+const dbPath =
+  process.env.DATABASE_PATH ||
+  path.join(__dirname, 'data', 'facturas_ia.db');
 
 const db = new Database(dbPath);
 
@@ -33,7 +34,10 @@ if (fs.existsSync(schemaPath)) {
   db.exec(schemaSql);
 }
 
-// ── ROUTES MINIMAS ─────────────────────
+// guardar db en app (por si luego usas routes)
+app.set('db', db);
+
+// ── ROUTES BASE ─────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', db: 'sqlite' });
 });
@@ -42,22 +46,33 @@ app.get('/api/test', (_req, res) => {
   res.json({ ok: true, message: 'API running' });
 });
 
-// ── SHUTDOWN ─────────────────────────
-process.on('SIGTERM', () => {
-  db.close();
-  process.exit(0);
-});
+// ── FRONTEND (si tienes React build) ─────────────────────
+const distPath = path.join(__dirname, 'dist');
 
-process.on('SIGINT', () => {
-  db.close();
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
+// ── SHUTDOWN ─────────────────────────
+function shutdown() {
+  try {
+    db.close();
+  } catch (e) {}
   process.exit(0);
-});
+}
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
 
 // ── START ────────────────────────────
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log('server running on port', PORT);
+  console.log(`server running on port ${PORT}`);
 });
 
 module.exports = app;
