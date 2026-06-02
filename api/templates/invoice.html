@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.5; margin: 0; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0056b3; padding-bottom: 20px; margin-bottom: 30px; }
+    .logo-area h1 { margin: 0; color: #0056b3; font-size: 28px; }
+    .logo-area p { margin: 5px 0 0; color: #666; }
+    .invoice-details { text-align: right; }
+    .invoice-details h2 { margin: 0 0 10px; font-size: 24px; color: #333; }
+    .invoice-details p { margin: 0; }
+    .bill-to { margin-bottom: 30px; }
+    .bill-to h3 { margin-bottom: 10px; color: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: #f8f9fa; font-weight: bold; color: #333; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .section-title { margin-bottom: 15px; color: #0056b3; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .totals { margin-top: 30px; width: 50%; float: right; }
+    .totals table { border: none; }
+    .totals th, .totals td { border: none; padding: 8px 12px; }
+    .totals .grand-total { font-size: 18px; font-weight: bold; border-top: 2px solid #0056b3; }
+    .footer { clear: both; margin-top: 50px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eee; padding-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo-area">
+      <h1>HomeSí</h1>
+      <p>powered by Supreme Lending</p>
+    </div>
+    <div class="invoice-details">
+      <h2>INVOICE</h2>
+      <p><strong>Month:</strong> {{MONTH}}</p>
+      <p><strong>Date:</strong> <span id="current-date"></span></p>
+    </div>
+  </div>
+
+  <div class="bill-to">
+    <h3>Billed To:</h3>
+    <p><strong>Branch:</strong> {{BRANCH_NAME}}</p>
+    <p><strong>Manager:</strong> {{BRANCH_MANAGER}}</p>
+    <p><strong>Location:</strong> {{COUNTY}}, {{STATE}}</p>
+  </div>
+
+  <h3 class="section-title">B2B Services</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Service Description</th>
+        <th class="text-right">Investment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{B2B_ROWS}}
+    </tbody>
+  </table>
+
+  <h3 class="section-title">Offshore Services</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee & Role</th>
+        <th class="text-right">Direct Salary</th>
+        <th class="text-right">Indirect Costs</th>
+        <th class="text-right">Agency Markup</th>
+        <th class="text-right">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{OFFSHORE_ROWS}}
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <table>
+      <tr>
+        <th>Total B2B:</th>
+        <td class="text-right">{{TOTAL_B2B}}</td>
+      </tr>
+      <tr>
+        <th>Total Offshore:</th>
+        <td class="text-right">{{TOTAL_OFFSHORE}}</td>
+      </tr>
+      <tr class="grand-total">
+        <th>Grand Total:</th>
+        <td class="text-right">{{GRAND_TOTAL}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>Thank you for your business!</p>
+    <p>HomeSí / Supreme Lending</p>
+  </div>
+
+  <script>
+    document.getElementById('current-date').innerText = new Date().toLocaleDateString();
+  </script>
+</body>
+</html>

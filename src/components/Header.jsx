@@ -1,0 +1,22 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+export default function Header() {
+  return (
+    <header className="glass-panel" style={{ padding: '1rem 2rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <h2 style={{ margin: 0 }}>
+          <span style={{ color: 'var(--primary)' }}>Home</span>
+          <span style={{ color: 'var(--secondary)' }}>Sí</span> 
+          <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: '10px' }}>
+            powered by Supreme Lending
+          </span>
+        </h2>
+      </div>
+      <nav style={{ display: 'flex', gap: '1rem' }}>
+        <Link to="/" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Dashboard</Link>
+        <Link to="/branches" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Branches</Link>
+      </nav>
+    </header>
+  );
+}
