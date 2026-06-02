@@ -11,6 +11,9 @@
 
   "scripts": {
     "start": "node server.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test:import": "node scripts/runTestImport.js",
     "create:workbook": "node scripts/createTestWorkbook.js"
   },
