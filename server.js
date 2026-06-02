@@ -92,6 +92,14 @@ app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
 
-module.exports = app;
 const importRoutes = require('./api/routes/importRoutes');
+const branchRoutes = require('./api/routes/branchRoutes');
+const reportRoutes = require('./api/routes/reportRoutes');
+const invoiceRoutes = require('./api/routes/invoiceRoutes');
+
 app.use('/api/import', importRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/invoices', invoiceRoutes);
+
+module.exports = app;
