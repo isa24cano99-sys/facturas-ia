@@ -5,6 +5,7 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const crypto = require('crypto');
+const { generateInvoicesFromReports } = require('../services/invoiceGenerator');
 
 const router = express.Router();
 const upload = multer({ dest: 'tmp/' });
@@ -285,12 +286,18 @@ router.post('/confirm', upload.single('file'), (req, res) => {
 
     db.exec('COMMIT');
 
+    // ── AUTO GENERATE INVOICES ──
+    const invoiceGenResult = generateInvoicesFromReports(req.app.get('db'));
+    stats.invoices_generated = invoiceGenResult.stats.created;
+    stats.invoice_errors = invoiceGenResult.stats.errors;
+
     fs.unlinkSync(req.file.path);
 
     res.json({
       ok: true,
-      message: 'Import successful',
-      stats
+      message: 'Import successful and invoices generated',
+      stats,
+      invoiceGeneration: invoiceGenResult
     });
 
   } catch (err) {
