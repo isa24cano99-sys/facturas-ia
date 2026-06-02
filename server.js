@@ -96,10 +96,12 @@ const importRoutes = require('./api/routes/importRoutes');
 const branchRoutes = require('./api/routes/branchRoutes');
 const reportRoutes = require('./api/routes/reportRoutes');
 const invoiceRoutes = require('./api/routes/invoiceRoutes');
+const dashboardRoutes = require('./api/routes/dashboardRoutes');
 
 app.use('/api/import', importRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 module.exports = app;

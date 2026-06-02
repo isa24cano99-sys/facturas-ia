@@ -53,3 +53,35 @@ CREATE TABLE IF NOT EXISTS offshore_services_data (
 
 CREATE INDEX IF NOT EXISTS idx_offshore_report
 ON offshore_services_data(report_id);
+
+-- ─────────────────────────────
+-- TABLE: invoices
+-- ─────────────────────────────
+CREATE TABLE IF NOT EXISTS invoices (
+  invoice_id TEXT PRIMARY KEY,
+  report_id TEXT UNIQUE,
+  branch_id TEXT,
+  branch_name TEXT,
+  county TEXT,
+  state TEXT,
+  branch_manager_name TEXT,
+  branch_manager_email TEXT,
+  report_month_id TEXT,
+  report_month_display TEXT,
+  invoice_type TEXT,
+  b2b_total REAL DEFAULT 0,
+  offshore_total REAL DEFAULT 0,
+  grand_total REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (report_id) REFERENCES monthly_reports(report_id),
+  FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_month
+ON invoices(report_month_id);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_branch
+ON invoices(branch_id);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_type
+ON invoices(invoice_type);
