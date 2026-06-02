@@ -93,5 +93,5 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-const importRoutes = require('./src/routes/importRoutes');
+const importRoutes = require('./api/routes/importRoutes');
 app.use('/api/import', importRoutes);
