@@ -4,6 +4,8 @@
 CREATE TABLE IF NOT EXISTS branches (
   branch_id TEXT PRIMARY KEY,
   branch_name TEXT,
+  county TEXT,
+  state TEXT,
   branch_manager_name TEXT,
   branch_manager_email TEXT
 );
@@ -30,8 +32,8 @@ ON monthly_reports(report_month_id);
 CREATE TABLE IF NOT EXISTS b2b_services_data (
   b2b_data_id TEXT PRIMARY KEY,
   report_id TEXT,
-  b2b_service_name TEXT DEFAULT 'B2B Strategy',
-  b2b_monthly_fee REAL,
+  service_name TEXT,
+  monthly_investment REAL,
   FOREIGN KEY (report_id) REFERENCES monthly_reports(report_id)
 );
 
@@ -41,15 +43,45 @@ CREATE TABLE IF NOT EXISTS b2b_services_data (
 CREATE TABLE IF NOT EXISTS offshore_services_data (
   offshore_data_id TEXT PRIMARY KEY,
   report_id TEXT,
-  offshore_service_name TEXT DEFAULT 'Offshore Hiring',
-  talent_name TEXT,
-  talent_role TEXT,
+  employee_name TEXT,
+  employee_role TEXT,
   mss_direct_salary REAL,
   indirect_costs REAL,
-  agency_markup REAL DEFAULT 0.20,
-  is_markup_waived INTEGER DEFAULT 1,
+  agency_markup REAL,
   FOREIGN KEY (report_id) REFERENCES monthly_reports(report_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_offshore_report
 ON offshore_services_data(report_id);
+
+-- ─────────────────────────────
+-- TABLE: invoices
+-- ─────────────────────────────
+CREATE TABLE IF NOT EXISTS invoices (
+  invoice_id TEXT PRIMARY KEY,
+  report_id TEXT UNIQUE,
+  branch_id TEXT,
+  branch_name TEXT,
+  county TEXT,
+  state TEXT,
+  branch_manager_name TEXT,
+  branch_manager_email TEXT,
+  report_month_id TEXT,
+  report_month_display TEXT,
+  invoice_type TEXT,
+  b2b_total REAL DEFAULT 0,
+  offshore_total REAL DEFAULT 0,
+  grand_total REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (report_id) REFERENCES monthly_reports(report_id),
+  FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_month
+ON invoices(report_month_id);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_branch
+ON invoices(branch_id);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_type
+ON invoices(invoice_type);
