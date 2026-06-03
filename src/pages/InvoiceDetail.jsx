@@ -53,20 +53,20 @@ export default function InvoiceDetail() {
       </div>
 
       <div className="grid grid-cols-2" style={{ marginBottom: '2rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.5)', padding: '1.5rem', borderRadius: '8px' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <h4>Branch Information</h4>
           <p><strong>ID:</strong> {report.branch_id}</p>
           <p><strong>Location:</strong> {report.county}, {report.state}</p>
           <p><strong>Manager:</strong> {report.branch_manager_name}</p>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.5)', padding: '1.5rem', borderRadius: '8px' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <h4>Summary</h4>
           <p><strong>B2B Services:</strong> {b2b.length}</p>
           <p><strong>Offshore Employees:</strong> {offshore.length}</p>
         </div>
       </div>
 
-      <h3 style={{ borderBottom: '1px solid #ddd', paddingBottom: '0.5rem', marginBottom: '1rem' }}>B2B Services</h3>
+      <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>B2B Services</h3>
       <div className="table-container" style={{ marginBottom: '2rem' }}>
         <table>
           <thead>
@@ -87,7 +87,7 @@ export default function InvoiceDetail() {
         </table>
       </div>
 
-      <h3 style={{ borderBottom: '1px solid #ddd', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Offshore Services</h3>
+      <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Offshore Services</h3>
       <div className="table-container">
         <table>
           <thead>
