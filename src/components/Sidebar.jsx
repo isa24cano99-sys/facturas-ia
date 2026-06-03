@@ -30,7 +30,7 @@ export default function Sidebar({ onMonthSelect, selectedMonth }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <h2>📅 Months</h2>
+        <h2>Months</h2>
       </div>
 
       {loading ? (

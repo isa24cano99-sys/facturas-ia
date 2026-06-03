@@ -2,450 +2,217 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice - {{INVOICE_NUMBER}}</title>
   <style>
-    /* ────────────────────────────────────────────────── */
-    /* RESET & GLOBAL */
-    /* ────────────────────────────────────────────────── */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    
+    :root {
+      --primary: #1C3F73;
+      --text: #334155;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg-light: #f8fafc;
+      --success: #22c55e;
     }
 
+    * { box-sizing: border-box; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-      color: #2c3e50;
-      line-height: 1.6;
-      background: white;
-      padding: 0;
+      font-family: 'Inter', sans-serif;
       margin: 0;
-    }
-
-    .page {
-      width: 8.5in;
-      height: 11in;
-      margin: 0 auto;
-      padding: 0.4in;
-      background: white;
-      page-break-after: always;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* HEADER */
-    /* ────────────────────────────────────────────────── */
-    .header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 3px solid #1c3f73;
-    }
-
-    .company-info h1 {
-      margin: 0 0 0.25rem 0;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #1c3f73;
-      letter-spacing: -0.5px;
-    }
-
-    .company-info p {
-      margin: 0;
-      font-size: 0.85rem;
-      color: #7f8c8d;
-      font-weight: 500;
-    }
-
-    .invoice-meta {
-      text-align: right;
-    }
-
-    .invoice-meta h2 {
-      margin: 0 0 1rem 0;
-      font-size: 1.8rem;
-      color: #1c3f73;
-      font-weight: 600;
-    }
-
-    .invoice-meta-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .invoice-meta-row {
-      display: contents;
-    }
-
-    .invoice-meta-label {
-      font-weight: 600;
-      color: #1c3f73;
-      text-align: right;
-    }
-
-    .invoice-meta-value {
-      text-align: right;
-      color: #2c3e50;
-      font-family: 'Monaco', 'Courier New', monospace;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* BILL TO SECTION */
-    /* ────────────────────────────────────────────────── */
-    .bill-to {
-      margin-bottom: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-
-    .bill-to-section {
-      padding: 1rem;
-      background: #f8f9fa;
-      border-left: 4px solid #1c3f73;
-      border-radius: 2px;
-    }
-
-    .bill-to-section h3 {
-      margin: 0 0 0.75rem 0;
-      font-size: 0.9rem;
-      color: #1c3f73;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-    }
-
-    .bill-to-item {
-      margin: 0.35rem 0;
-      font-size: 0.9rem;
+      padding: 40px;
+      color: var(--text);
+      font-size: 14px;
       line-height: 1.5;
     }
 
-    .bill-to-item .label {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      font-size: 28px;
+    }
+
+    .invoice-details {
+      text-align: right;
+    }
+    
+    .invoice-details table {
+      width: auto;
+      margin-left: auto;
+    }
+    .invoice-details td {
+      padding: 4px 8px;
+      border: none;
+    }
+    .invoice-details td:first-child {
       font-weight: 600;
-      color: #1c3f73;
-      display: inline-block;
-      width: 80px;
+      color: var(--text-muted);
+      text-align: right;
     }
 
-    .bill-to-item .value {
-      color: #2c3e50;
+    .bill-to {
+      margin-bottom: 30px;
+      background: var(--bg-light);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .bill-to h3 {
+      margin: 0 0 10px 0;
+      color: var(--primary);
+      font-size: 16px;
     }
 
-    /* ────────────────────────────────────────────────── */
-    /* SECTION TITLES */
-    /* ────────────────────────────────────────────────── */
-    .section-title {
-      margin: 1.5rem 0 0.75rem 0;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1c3f73;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      border-bottom: 2px solid #1c3f73;
-      padding-bottom: 0.4rem;
+    .bill-to p {
+      margin: 4px 0;
     }
 
-    /* ────────────────────────────────────────────────── */
-    /* TABLES */
-    /* ────────────────────────────────────────────────── */
+    h2.section-title {
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 30px;
+      font-size: 18px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    thead {
-      background: #1c3f73;
-      color: white;
+      margin-bottom: 20px;
     }
 
     th {
-      padding: 0.65rem 0.75rem;
+      background-color: var(--primary);
+      color: white;
       text-align: left;
+      padding: 12px;
       font-weight: 600;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      border: none;
-    }
-
-    th.text-right {
-      text-align: right;
-      padding-right: 1rem;
+      font-size: 13px;
     }
 
     td {
-      padding: 0.65rem 0.75rem;
-      border-bottom: 1px solid #e0e6ed;
-      color: #2c3e50;
-    }
-
-    td.text-right {
-      text-align: right;
-      padding-right: 1rem;
-      font-weight: 500;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: 2px solid #1c3f73;
-    }
-
-    /* Employee cell styling */
-    td.employee-cell {
-      padding: 0.75rem;
-    }
-
-    .employee-name {
-      font-weight: 600;
-      color: #1c3f73;
-      margin: 0 0 0.25rem 0;
-    }
-
-    .employee-role {
-      font-size: 0.8rem;
-      color: #7f8c8d;
-      margin: 0;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* STRIKETHROUGH & WAIVED BADGE */
-    /* ────────────────────────────────────────────────── */
-    .strikethrough {
-      text-decoration: line-through;
-      color: #95a5a6;
-      position: relative;
-    }
-
-    .waived-badge {
-      display: inline-block;
-      background: #27ae60;
-      color: white;
-      padding: 0.2rem 0.5rem;
-      border-radius: 3px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-      margin-left: 0.5rem;
-      white-space: nowrap;
-    }
-
-    .markup-cell {
-      font-size: 0.85rem;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* TOTALS SECTION */
-    /* ────────────────────────────────────────────────── */
-    .totals-section {
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      float: right;
-      width: 50%;
-      padding-left: 1rem;
-    }
-
-    .totals-section table {
-      margin: 0;
-      font-size: 0.95rem;
-    }
-
-    .totals-section th,
-    .totals-section td {
-      padding: 0.6rem 0.75rem;
-      border: none;
-      text-align: right;
-    }
-
-    .totals-section th {
-      background: white;
-      color: #2c3e50;
-      font-weight: 600;
-      text-align: left;
-      width: 50%;
-      padding-left: 0;
-    }
-
-    .totals-section td {
-      font-family: 'Monaco', 'Courier New', monospace;
-      font-weight: 500;
-      color: #1c3f73;
-    }
-
-    .total-row {
-      border-top: 1px solid #e0e6ed;
-      padding-top: 0.6rem !important;
-    }
-
-    .grand-total-row {
-      border-top: 3px solid #1c3f73;
-      padding-top: 0.8rem !important;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #1c3f73;
-    }
-
-    .grand-total-row td {
-      font-size: 1.15rem;
-      padding: 0.8rem 0.75rem;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* EMPTY STATE */
-    /* ────────────────────────────────────────────────── */
-    .no-data {
-      text-align: center;
-      padding: 1.5rem;
-      color: #7f8c8d;
-      font-size: 0.9rem;
-      background: #ecf0f1;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* FOOTER */
-    /* ────────────────────────────────────────────────── */
-    .footer {
-      clear: both;
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #bdc3c7;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #7f8c8d;
-    }
-
-    .footer-line1 {
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 0.25rem;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* NOTES */
-    /* ────────────────────────────────────────────────── */
-    .notes-section {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #f8f9fa;
-      border-left: 4px solid #27ae60;
-      border-radius: 2px;
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    .notes-section h4 {
-      margin: 0 0 0.5rem 0;
-      color: #27ae60;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .notes-section p {
-      margin: 0.25rem 0;
-      color: #2c3e50;
-    }
-
-    /* ────────────────────────────────────────────────── */
-    /* PAGE BREAK RULES */
-    /* ────────────────────────────────────────────────── */
-    table {
-      page-break-inside: avoid;
-    }
-
-    .section-title {
-      page-break-after: avoid;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
     }
 
     tr {
       page-break-inside: avoid;
     }
 
-    /* ────────────────────────────────────────────────── */
-    /* PRINT STYLES */
-    /* ────────────────────────────────────────────────── */
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      .page {
-        margin: 0;
-        padding: 0.4in;
-        page-break-after: always;
-      }
+    tr:nth-child(even) {
+      background-color: #f1f5f9;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .badge-waived {
+      background-color: var(--success);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: bold;
+      margin-left: 8px;
+      display: inline-block;
+    }
+
+    .strikethrough {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .totals {
+      width: 350px;
+      margin-left: auto;
+      margin-top: 30px;
+    }
+
+    .totals table td {
+      padding: 8px 12px;
+      border: none;
+    }
+    
+    .totals table tr {
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .totals table tr:last-child {
+      border-bottom: none;
+    }
+
+    .totals table td:first-child {
+      font-weight: 600;
+    }
+
+    .grand-total {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .grand-total td {
+      padding: 12px !important;
+      color: white !important;
+    }
+
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
     }
   </style>
 </head>
 <body>
 
-<div class="page">
-
-  <!-- HEADER -->
   <div class="header">
-    <div class="company-info">
-      <h1>HomeSí</h1>
-      <p>powered by Supreme Lending</p>
+    <div>
+      <h1>HomeSí / Supreme Lending</h1>
+      <p style="margin: 0; color: var(--text-muted);">Pricing & Performance Report</p>
     </div>
-    <div class="invoice-meta">
-      <h2>INVOICE</h2>
-      <div class="invoice-meta-grid">
-        <div class="invoice-meta-row">
-          <span class="invoice-meta-label">Invoice #:</span>
-          <span class="invoice-meta-value">{{INVOICE_NUMBER}}</span>
-        </div>
-        <div class="invoice-meta-row">
-          <span class="invoice-meta-label">Issue Date:</span>
-          <span class="invoice-meta-value">{{ISSUE_DATE}}</span>
-        </div>
-        <div class="invoice-meta-row">
-          <span class="invoice-meta-label">Period:</span>
-          <span class="invoice-meta-value">{{MONTH}}</span>
-        </div>
-      </div>
+    <div class="invoice-details">
+      <table>
+        <tr>
+          <td>Invoice Number:</td>
+          <td>{{INVOICE_NUMBER}}</td>
+        </tr>
+        <tr>
+          <td>Invoice Date:</td>
+          <td>{{INVOICE_DATE}}</td>
+        </tr>
+        <tr>
+          <td>Month:</td>
+          <td>{{MONTH}}</td>
+        </tr>
+      </table>
     </div>
   </div>
 
-  <!-- BILL TO -->
   <div class="bill-to">
-    <div class="bill-to-section">
-      <h3>Bill To</h3>
-      <div class="bill-to-item">
-        <span class="label">Branch:</span>
-        <span class="value">{{BRANCH_NAME}}</span>
-      </div>
-      <div class="bill-to-item">
-        <span class="label">Branch ID:</span>
-        <span class="value">{{BRANCH_ID}}</span>
-      </div>
-      <div class="bill-to-item">
-        <span class="label">Location:</span>
-        <span class="value">{{COUNTY}}, {{STATE}}</span>
-      </div>
-    </div>
-    <div class="bill-to-section">
-      <h3>Manager Information</h3>
-      <div class="bill-to-item">
-        <span class="label">Manager:</span>
-        <span class="value">{{BRANCH_MANAGER_NAME}}</span>
-      </div>
-      <div class="bill-to-item">
-        <span class="label">Email:</span>
-        <span class="value" style="font-family: 'Monaco', monospace; font-size: 0.8rem;">{{BRANCH_MANAGER_EMAIL}}</span>
-      </div>
-    </div>
+    <h3>Issue To</h3>
+    <p><strong>Branch:</strong> {{BRANCH_NAME}} (ID: {{BRANCH_ID}})</p>
+    <p><strong>Manager:</strong> {{BRANCH_MANAGER}} - {{BRANCH_EMAIL}}</p>
+    <p><strong>Location:</strong> {{COUNTY}}, {{STATE}}</p>
   </div>
 
-  <!-- B2B SERVICES -->
-  {{#B2B_SECTION}}
-  <h2 class="section-title">📊 B2B Services</h2>
+  <h2 class="section-title">B2B Services</h2>
   <table>
     <thead>
       <tr>
@@ -457,15 +224,13 @@
       {{B2B_ROWS}}
     </tbody>
   </table>
-  {{/B2B_SECTION}}
 
-  <!-- OFFSHORE SERVICES -->
-  {{#OFFSHORE_SECTION}}
-  <h2 class="section-title">👥 Offshore Services</h2>
+  <h2 class="section-title">Offshore Services</h2>
   <table>
     <thead>
       <tr>
-        <th>Employee & Role</th>
+        <th>Employee Name</th>
+        <th>Role</th>
         <th class="text-right">Monthly Salary</th>
         <th class="text-right">Indirect Costs</th>
         <th class="text-right">Agency Markup</th>
@@ -476,43 +241,31 @@
       {{OFFSHORE_ROWS}}
     </tbody>
   </table>
-  {{/OFFSHORE_SECTION}}
 
-  <!-- TOTALS -->
-  <div class="totals-section">
+  <div class="totals">
     <table>
       <tr>
-        <th>B2B Total:</th>
-        <td>{{TOTAL_B2B}}</td>
+        <td>B2B Total:</td>
+        <td class="text-right">{{TOTAL_B2B}}</td>
       </tr>
       <tr>
-        <th>Offshore Total:</th>
-        <td>{{TOTAL_OFFSHORE}}</td>
+        <td>Offshore Total:</td>
+        <td class="text-right">{{TOTAL_OFFSHORE}}</td>
       </tr>
       <tr>
-        <th>Markup Waived:</th>
-        <td>{{TOTAL_MARKUP_WAIVED}}</td>
+        <td>Markup Waived:</td>
+        <td class="text-right"><span class="strikethrough">{{TOTAL_MARKUP}}</span><br><span class="badge-waived">100% WAIVED</span></td>
       </tr>
-      <tr class="grand-total-row">
-        <th>Grand Total:</th>
-        <td>{{GRAND_TOTAL}}</td>
+      <tr class="grand-total">
+        <td>Grand Total:</td>
+        <td class="text-right">{{GRAND_TOTAL}}</td>
       </tr>
     </table>
   </div>
 
-  <!-- NOTES -->
-  <div class="notes-section">
-    <h4>✓ Note on Agency Markup</h4>
-    <p>The Agency Markup amounts shown above are <strong>100% WAIVED</strong> for this billing period. These costs are not charged to your account. Your final invoice reflects the effective cost of services only (Salary + Indirect Costs).</p>
-  </div>
-
-  <!-- FOOTER -->
   <div class="footer">
-    <div class="footer-line1">Thank you for your business!</div>
-    <div>HomeSí | powered by Supreme Lending</div>
+    <p>Thank you for your business. For any inquiries, please contact support.</p>
   </div>
-
-</div>
 
 </body>
 </html>

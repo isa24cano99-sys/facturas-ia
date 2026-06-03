@@ -70,25 +70,37 @@ export default function InvoiceList({ month, onSelectInvoice }) {
       )}
 
       {/* Búsqueda y Filtros */}
-      <div className="filters-bar">
-        <input
-          type="text"
-          placeholder="Search by branch ID, name, or manager..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
+      <div className="filters-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
+          <input
+            type="text"
+            placeholder="Search by branch ID, name, or manager..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
 
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="filter-select"
-        >
-          <option value="all">All Types</option>
-          <option value="b2b">B2B Only</option>
-          <option value="offshore">Offshore Only</option>
-          <option value="combined">Combined</option>
-        </select>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="filter-select"
+          >
+            <option value="all">All Types</option>
+            <option value="b2b">B2B Only</option>
+            <option value="offshore">Offshore Only</option>
+            <option value="combined">Combined</option>
+          </select>
+        </div>
+        
+        {month && (
+          <a 
+            href={`${API}/api/invoices/generate-batch/${month}`}
+            className="btn btn-primary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            Download All (ZIP)
+          </a>
+        )}
       </div>
 
       {/* Lista de Invoices */}
@@ -131,7 +143,7 @@ export default function InvoiceList({ month, onSelectInvoice }) {
                         className="btn btn-sm btn-secondary"
                         onClick={() => handlePreview(invoice)}
                       >
-                        👁️ Preview
+                        Preview
                       </button>
                       <a 
                         href={`${API}/api/invoices/generate/${invoice.report_id}`}
@@ -139,7 +151,7 @@ export default function InvoiceList({ month, onSelectInvoice }) {
                         rel="noopener noreferrer"
                         className="btn btn-sm btn-primary"
                       >
-                        📄 PDF
+                        PDF
                       </a>
                     </div>
                   </td>

@@ -167,7 +167,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
               rel="noopener noreferrer"
               className="btn btn-primary"
             >
-              📄 Download PDF
+              Download PDF
             </a>
           )}
         </div>

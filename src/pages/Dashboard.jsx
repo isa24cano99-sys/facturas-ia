@@ -89,14 +89,14 @@ export default function Dashboard() {
       <main className="dashboard-main">
         <div className="dashboard-header">
           <div>
-            <h1>📊 Invoice Dashboard</h1>
+            <h1>Invoice Dashboard</h1>
             <p className="dashboard-subtitle">Manage and view all your invoices</p>
           </div>
           <button 
             className="btn btn-primary btn-lg"
             onClick={() => setShowUploadModal(true)}
           >
-            ⬆️ Upload Excel
+            Upload Excel
           </button>
         </div>
 
@@ -133,8 +133,8 @@ export default function Dashboard() {
 
                 {importStatus === 'SUCCESS' && (
                   <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
-                    <h3 style={{ color: '#166534' }}>Import Successful!</h3>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#166534', marginBottom: '1rem' }}>Success!</div>
+                    <h3 style={{ color: '#166534' }}>Import Successful</h3>
                     <p style={{ marginBottom: '1.5rem' }}>Excel data and invoices have been loaded.</p>
                   </div>
                 )}

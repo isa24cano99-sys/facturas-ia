@@ -149,7 +149,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
 
   // Header
   html = html.replace('{{INVOICE_NUMBER}}', invoiceNumber);
-  html = html.replace(/{{ISSUE_DATE}}/g, issueDate);
+  html = html.replace(/{{INVOICE_DATE}}/g, issueDate);
   html = html.replace(/{{MONTH}}/g, monthDisplay);
 
   // Branch Info
@@ -157,23 +157,8 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
   html = html.replace(/{{BRANCH_NAME}}/g, report.branch_name || 'N/A');
   html = html.replace(/{{COUNTY}}/g, report.county || 'N/A');
   html = html.replace(/{{STATE}}/g, report.state || 'N/A');
-  html = html.replace(/{{BRANCH_MANAGER_NAME}}/g, report.branch_manager_name || 'N/A');
-  html = html.replace(/{{BRANCH_MANAGER_EMAIL}}/g, report.branch_manager_email || 'N/A');
-
-  // Secciones condicionales
-  if (hasB2B) {
-    html = html.replace('{{#B2B_SECTION}}', '');
-    html = html.replace('{{/B2B_SECTION}}', '');
-  } else {
-    html = html.replace(/{{#B2B_SECTION}}.*?{{\/B2B_SECTION}}/s, '');
-  }
-
-  if (hasOffshore) {
-    html = html.replace('{{#OFFSHORE_SECTION}}', '');
-    html = html.replace('{{/OFFSHORE_SECTION}}', '');
-  } else {
-    html = html.replace(/{{#OFFSHORE_SECTION}}.*?{{\/OFFSHORE_SECTION}}/s, '');
-  }
+  html = html.replace(/{{BRANCH_MANAGER}}/g, report.branch_manager_name || 'N/A');
+  html = html.replace(/{{BRANCH_EMAIL}}/g, report.branch_manager_email || 'N/A');
 
   // Data rows
   html = html.replace('{{B2B_ROWS}}', b2bHtmlRows);
@@ -182,7 +167,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
   // Totals
   html = html.replace('{{TOTAL_B2B}}', formatCurrency(totalB2B));
   html = html.replace('{{TOTAL_OFFSHORE}}', formatCurrency(totalOffshore));
-  html = html.replace('{{TOTAL_MARKUP_WAIVED}}', formatCurrency(totalMarkupWaived));
+  html = html.replace('{{TOTAL_MARKUP}}', formatCurrency(totalMarkupWaived));
   html = html.replace('{{GRAND_TOTAL}}', formatCurrency(grandTotal));
 
   // ═══════════════════════════════════════════════════════
