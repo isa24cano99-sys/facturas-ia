@@ -53,7 +53,7 @@ function generatePDFFilename(branchId, monthDisplay) {
 /**
  * Genera PDF profesional para una factura
  */
-async function generateInvoicePDF(report, b2bData, offshoreData) {
+async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance = null) {
   // Read HTML template
   const templatePath = path.join(__dirname, '..', 'templates', 'invoice.html');
   let html = fs.readFileSync(templatePath, 'utf8');
@@ -67,10 +67,8 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
   // ═══════════════════════════════════════════════════════
   let totalB2B = 0;
   let b2bHtmlRows = '';
-  let hasB2B = false;
 
   if (b2bData && b2bData.length > 0) {
-    hasB2B = true;
     b2bData.forEach(item => {
       const investment = item.monthly_investment || 0;
       totalB2B += investment;
@@ -91,10 +89,8 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
   let totalOffshore = 0;
   let totalMarkupWaived = 0;
   let offshoreHtmlRows = '';
-  let hasOffshore = false;
 
   if (offshoreData && offshoreData.length > 0) {
-    hasOffshore = true;
     offshoreData.forEach(item => {
       const salary = item.mss_direct_salary || 0;
       const costs = item.indirect_costs || 0;
@@ -114,7 +110,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
           <td class="text-right">${formatCurrency(costs)}</td>
           <td class="text-right markup-cell">
             <span class="strikethrough">${formatCurrency(markup)}</span>
-            <span class="waived-badge">Waived</span>
+            <span class="badge-waived">100% WAIVED</span>
           </td>
           <td class="text-right"><strong>${formatCurrency(effectiveCost)}</strong></td>
         </tr>
@@ -174,7 +170,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
   // GENERATE PDF WITH PUPPETEER
   // ═══════════════════════════════════════════════════════
 
-  const browser = await puppeteer.launch({
+  const browser = browserInstance || await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
@@ -196,7 +192,11 @@ async function generateInvoicePDF(report, b2bData, offshoreData) {
     preferCSSPageSize: true
   });
 
-  await browser.close();
+  await page.close();
+
+  if (!browserInstance) {
+    await browser.close();
+  }
 
   const filename = generatePDFFilename(report.branch_id, monthDisplay);
 
@@ -225,12 +225,17 @@ async function generateBatchInvoicePDFs(reports, b2bDataMap, offshoreDataMap) {
   const results = [];
   const errors = [];
 
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
   for (const report of reports) {
     try {
       const b2bData = b2bDataMap[report.report_id] || [];
       const offshoreData = offshoreDataMap[report.report_id] || [];
 
-      const pdfData = await generateInvoicePDF(report, b2bData, offshoreData);
+      const pdfData = await generateInvoicePDF(report, b2bData, offshoreData, browser);
       results.push(pdfData);
     } catch (err) {
       errors.push({
@@ -241,5 +246,12 @@ async function generateBatchInvoicePDFs(reports, b2bDataMap, offshoreDataMap) {
     }
   }
 
+  await browser.close();
+
   return { results, errors };
 }
+
+module.exports = {
+  generateInvoicePDF,
+  generateBatchInvoicePDFs
+};

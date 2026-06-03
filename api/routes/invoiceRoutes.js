@@ -88,11 +88,18 @@ router.get('/generate-batch/:report_month_id', async (req, res) => {
     }
 
     // Create ZIP
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    
+    archive.on('error', (err) => {
+      console.error('Archiver Error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ ok: false, error: 'Zip generation failed', details: err.message });
+      }
+    });
+
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="Invoices_${report_month_id}.zip"`);
-
-    const archive = archiver('zip', { zlib: { level: 9 } });
-    archive.on('error', (err) => { throw err; });
+    
     archive.pipe(res);
 
     for (const pdf of results) {
