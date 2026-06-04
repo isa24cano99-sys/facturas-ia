@@ -61,12 +61,26 @@ app.get('/api/test', (_req, res) => {
   res.json({ ok: true, message: 'API running' });
 });
 
+// ── API ROUTES (must register BEFORE the catch-all) ─────────────────────
+const importRoutes = require('./api/routes/importRoutes');
+const branchRoutes = require('./api/routes/branchRoutes');
+const reportRoutes = require('./api/routes/reportRoutes');
+const invoiceRoutes = require('./api/routes/invoiceRoutes');
+const dashboardRoutes = require('./api/routes/dashboardRoutes');
+
+app.use('/api/import', importRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
 // ── FRONTEND STATIC (REACT BUILD) ─────────────────────
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 
+  // Catch-all: serve index.html for all non-API routes (React Router)
   app.get('*', (_req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
@@ -91,17 +105,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
-
-const importRoutes = require('./api/routes/importRoutes');
-const branchRoutes = require('./api/routes/branchRoutes');
-const reportRoutes = require('./api/routes/reportRoutes');
-const invoiceRoutes = require('./api/routes/invoiceRoutes');
-const dashboardRoutes = require('./api/routes/dashboardRoutes');
-
-app.use('/api/import', importRoutes);
-app.use('/api/branches', branchRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/invoices', invoiceRoutes);
-app.use('/api/dashboard', dashboardRoutes);
 
 module.exports = app;
