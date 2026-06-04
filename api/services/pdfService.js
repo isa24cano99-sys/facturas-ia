@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+let globalBrowser = null;
+
 /**
  * Genera un número de factura único
  * Formato: HOM-YYYYMMDD-XXXX
@@ -230,16 +232,21 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   // GENERATE PDF WITH PUPPETEER
   // ═══════════════════════════════════════════════════════
 
-  const browser = browserInstance || await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+  // Start global browser if not running and no specific instance provided
+  if (!browserInstance && !globalBrowser) {
+    globalBrowser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    });
+  }
 
+  const browser = browserInstance || globalBrowser;
   const page = await browser.newPage();
 
+  // 'load' is much faster than 'networkidle', it doesn't wait an extra 500ms
   await page.setContent(html, { 
-    waitUntil: 'networkidle2',
-    timeout: 60000 
+    waitUntil: 'load',
+    timeout: 30000 
   });
 
   const pdfBuffer = await page.pdf({
@@ -256,10 +263,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   });
 
   await page.close();
-
-  if (!browserInstance) {
-    await browser.close();
-  }
+  // We no longer close the global browser here so it stays hot for the next request
 
   const filename = generatePDFFilename(report.branch_id, monthDisplay);
 
