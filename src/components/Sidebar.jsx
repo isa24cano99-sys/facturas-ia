@@ -4,7 +4,7 @@ const API = typeof window !== 'undefined' && window.location.hostname === 'local
   ? 'http://localhost:3000' 
   : '';
 
-export default function Sidebar({ onMonthSelect, selectedMonth }) {
+export default function Sidebar({ onMonthSelect, selectedMonth, refreshTrigger }) {
   const [months, setMonths] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +25,7 @@ export default function Sidebar({ onMonthSelect, selectedMonth }) {
         console.error(err);
         setLoading(false);
       });
-  }, [selectedMonth, onMonthSelect]);
+  }, [selectedMonth, onMonthSelect, refreshTrigger]);
 
   return (
     <aside className="sidebar">

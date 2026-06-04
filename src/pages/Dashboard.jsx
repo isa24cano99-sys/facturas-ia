@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // Import Flow States
   const [file, setFile] = useState(null);
@@ -61,9 +62,9 @@ export default function Dashboard() {
       if (!data.ok) throw new Error(data.error || 'Import failed');
       
       setImportStatus('SUCCESS');
-      // Refresh invoices by resetting month selection
+      // Incrementar el trigger para que los componentes hijos hagan re-fetch automático
       setTimeout(() => {
-        setSelectedMonth(null);
+        setRefreshTrigger(prev => prev + 1);
         handleCancel();
       }, 1500);
     } catch (err) {
@@ -83,7 +84,11 @@ export default function Dashboard() {
   return (
     <div className="dashboard-layout">
       {/* Sidebar con meses */}
-      <Sidebar onMonthSelect={setSelectedMonth} selectedMonth={selectedMonth} />
+      <Sidebar 
+        onMonthSelect={setSelectedMonth} 
+        selectedMonth={selectedMonth} 
+        refreshTrigger={refreshTrigger} 
+      />
 
       {/* Main Content */}
       <main className="dashboard-main">
@@ -199,7 +204,11 @@ export default function Dashboard() {
 
         {/* Invoices List */}
         {selectedMonth ? (
-          <InvoiceList month={selectedMonth} onSelectInvoice={setSelectedInvoice} />
+          <InvoiceList 
+            month={selectedMonth} 
+            onSelectInvoice={setSelectedInvoice} 
+            refreshTrigger={refreshTrigger}
+          />
         ) : (
           <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Select a month from the sidebar to view invoices</p>

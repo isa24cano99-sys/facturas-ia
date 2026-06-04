@@ -4,14 +4,14 @@ const API = typeof window !== 'undefined' && window.location.hostname === 'local
   ? 'http://localhost:3000' 
   : '';
 
-export default function InvoiceList({ month, onSelectInvoice }) {
+export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) {
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  // Fetch invoices cuando cambia mes, búsqueda o tipo
+  // Fetch invoices cuando cambia mes, búsqueda, tipo o hay un refresh
   useEffect(() => {
     if (!month) return;
 
@@ -35,7 +35,7 @@ export default function InvoiceList({ month, onSelectInvoice }) {
         console.error(err);
         setLoading(false);
       });
-  }, [month, search, typeFilter]);
+  }, [month, search, typeFilter, refreshTrigger]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0);
