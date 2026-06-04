@@ -98,7 +98,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
                   <tbody>
                     {details.b2b.map(item => (
                       <tr key={item.b2b_data_id}>
-                        <td>{item.service_name}</td>
+                        <td>{item.service_name || 'B2B Service'}</td>
                         <td className="text-right">{formatCurrency(item.monthly_investment)}</td>
                       </tr>
                     ))}

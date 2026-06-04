@@ -149,7 +149,7 @@ export default function Dashboard() {
                 {importStatus === 'PREVIEW' && previewData && (
                   <div>
                     <h3>Import Preview</h3>
-                    <div style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '8px' }}>
+                    <div style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.05)', borderRadius: '8px' }}>
                       <p><strong>Branches:</strong> {previewData.stats.branches} ({previewData.stats.newBranches} new)</p>
                       <p><strong>Reports:</strong> {previewData.stats.reports}</p>
                       <p><strong>B2B Entries:</strong> {previewData.stats.b2b_entries}</p>

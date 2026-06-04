@@ -119,7 +119,7 @@ function parseAndValidate(filePath, db) {
     const rawInv = row.monthly_investment ?? row.b2b_monthly_fee;
     const monthly_inv = parseFloat(rawInv);
     // Accept both 'service_name' and legacy 'b2b_service_name'
-    const service_name = String(row.service_name || row.b2b_service_name || '').trim();
+    const service_name = String(row.service_name || row.b2b_service_name || 'B2B Service').trim();
 
     if (!branch_id) errors.push({ sheet: 'b2b_services_data', row: rowNum, message: 'branch_id is empty.' });
     if (branch_id && !importedBranchIds.has(branch_id)) {
@@ -270,7 +270,7 @@ router.post('/confirm', upload.single('file'), (req, res) => {
     `);
 
     for (const b2b of parsed.b2b) {
-      insertB2b.run(id('b2b'), b2b.report_id, String(b2b.service_name || '').trim(), b2b.monthly_investment);
+      insertB2b.run(id('b2b'), b2b.report_id, String(b2b.service_name || 'B2B Service').trim(), b2b.monthly_investment);
     }
 
     // 4. Insert Offshore

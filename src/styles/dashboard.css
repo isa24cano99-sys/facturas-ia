@@ -26,7 +26,7 @@
 
 .sidebar-header {
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, );
   padding-bottom: 1rem;
 }
 
@@ -138,14 +138,14 @@
   padding: 1.5rem;
   border-radius: var(--radius-md);
   border-left: 4px solid var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: var(--transition);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid rgba(0, 0, 0, );
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card h3 {
@@ -191,7 +191,7 @@
   flex: 1;
   min-width: 250px;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, );
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   font-size: 0.95rem;
@@ -212,7 +212,7 @@
 
 .filter-select {
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, );
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-main);
@@ -241,8 +241,8 @@
   background: var(--bg-card);
   border-radius: var(--radius-md);
   overflow-x: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, );
 }
 
 .invoices-table {
@@ -253,8 +253,8 @@
 }
 
 .invoices-table thead {
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, );
+  border-bottom: 1px solid rgba(0, 0, 0, );
 }
 
 .invoices-table th {
@@ -268,7 +268,7 @@
 }
 
 .invoices-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, );
   transition: background-color 0.2s ease;
 }
 
@@ -372,14 +372,14 @@
 
 .modal-content {
   background: var(--bg-surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, );
   border-radius: var(--radius-lg);
   max-width: 90%;
   max-height: 90vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.3s ease;
 }
 
@@ -399,7 +399,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, );
 }
 
 .modal-header h2 {
@@ -446,7 +446,7 @@
   justify-content: flex-end;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(0, 0, 0, );
   background: rgba(0, 0, 0, 0.15);
 }
 
@@ -457,7 +457,7 @@
 .preview-section {
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, );
 }
 
 .preview-section:last-child {
@@ -502,8 +502,8 @@
 }
 
 .preview-table thead {
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, );
+  border-bottom: 1px solid rgba(0, 0, 0, );
 }
 
 .preview-table th {
@@ -517,7 +517,7 @@
 
 .preview-table td {
   padding: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, );
   color: var(--text-secondary);
 }
 
