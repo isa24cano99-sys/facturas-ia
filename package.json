@@ -2,7 +2,7 @@
   "name": "facturas-ia",
   "version": "1.0.0",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "description": "Pricing & Performance Report App — HomeSí powered by Supreme Lending",
   "main": "server.js",
