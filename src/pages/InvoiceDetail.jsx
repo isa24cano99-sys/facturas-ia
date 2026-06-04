@@ -11,7 +11,7 @@ export default function InvoiceDetail() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchDetails = () => {
     fetch(`${API}/api/reports/${report_id}`)
       .then(res => res.json())
       .then(resData => {
@@ -22,7 +22,137 @@ export default function InvoiceDetail() {
         console.error(err);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchDetails();
   }, [report_id]);
+
+  const B2BCard = ({ item, onSave, formatCurrency, report }) => {
+    const [serviceName, setServiceName] = useState(item.service_name || 'B2B Service');
+    const [investment, setInvestment] = useState(item.monthly_investment || 0);
+    const [successFee, setSuccessFee] = useState(item.success_fee || '');
+    const [saving, setSaving] = useState(false);
+
+    const handleSave = async () => {
+      setSaving(true);
+      try {
+        const res = await fetch(`${API}/api/reports/b2b/${item.b2b_data_id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            service_name: serviceName,
+            monthly_investment: Number(investment),
+            success_fee: successFee
+          })
+        });
+        if (res.ok) {
+          onSave(); 
+        } else {
+          alert('Failed to save');
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Error saving');
+      } finally {
+        setSaving(false);
+      }
+    };
+
+    const rows = [
+      { label: "Issued to", value: report.branch_manager_name || 'N/A' },
+      { label: "Branch", value: `${report.branch_name || ''} · ${report.county || ''}, ${report.state || ''}` },
+      { label: "Date", value: report.report_month_display || '' },
+      { label: "Service", value: (
+        <input 
+          type="text" 
+          value={serviceName} 
+          onChange={e => setServiceName(e.target.value)}
+          style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+        />
+      ) },
+      { label: "Monthly Investment", highlight: true, value: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ color: '#d44f1e' }}>$</span>
+          <input 
+            type="number" 
+            value={investment} 
+            onChange={e => setInvestment(e.target.value)}
+            style={{ width: '120px', padding: '6px', borderRadius: '4px', border: '1px solid #d44f1e', color: '#d44f1e', fontWeight: 'bold' }}
+            step="0.01"
+          />
+        </div>
+      ) },
+      { label: "Success Fee", value: (
+        <input 
+          type="text" 
+          value={successFee} 
+          onChange={e => setSuccessFee(e.target.value)}
+          style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+          placeholder="e.g., 25 bps per closed loan originated from portfolio"
+        />
+      ) },
+      { label: "", value: (
+        <button onClick={handleSave} disabled={saving} style={{ padding: '8px 16px', fontSize: '0.9rem', cursor: 'pointer', borderRadius: '4px', border: 'none', background: '#1C3F73', color: '#fff', fontWeight: '600' }}>
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+      ) }
+    ];
+
+    return (
+      <div style={{ border: "1px solid #e0e0e0", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: '#fff' }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid #e0e0e0" : "none" }}>
+                <td style={{ padding: "14px 20px", color: "#888", width: "35%", borderRight: "1px solid #e0e0e0" }}>{row.label}</td>
+                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "#ef4444" : "#1C3F73" }}>
+                  {row.value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const OffshoreCard = ({ item, formatCurrency, report }) => {
+    const subtotal = item.mss_direct_salary + item.indirect_costs + item.agency_markup;
+    const rows = [
+      { label: "Issued to", value: report.branch_manager_name || 'N/A' },
+      { label: "Branch", value: `${report.branch_name || ''} · ${report.county || ''}, ${report.state || ''}` },
+      { label: "Date", value: report.report_month_display || '' },
+      { label: "Employee", value: item.employee_name || 'N/A' },
+      { label: "Role", value: item.employee_role || 'N/A' },
+      { label: "Direct Salary", value: formatCurrency(item.mss_direct_salary) },
+      { label: "Indirect Costs", value: formatCurrency(item.indirect_costs) },
+      { label: "Agency Markup", value: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span className="strikethrough" style={{ textDecoration: 'line-through', color: '#94a3b8' }}>{formatCurrency(item.agency_markup)}</span>
+          <span className="badge-waived" style={{ backgroundColor: '#22c55e', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold' }}>100% WAIVED</span>
+        </div>
+      ) },
+      { label: "Effective Cost", highlight: true, value: formatCurrency(subtotal) },
+    ];
+
+    return (
+      <div style={{ border: "1px solid #e0e0e0", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: '#fff' }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid #e0e0e0" : "none" }}>
+                <td style={{ padding: "14px 20px", color: "#888", width: "35%", borderRight: "1px solid #e0e0e0" }}>{row.label}</td>
+                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "#ef4444" : "#1C3F73" }}>
+                  {row.value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   const handleDownloadPDF = () => {
     window.open(`${API}/api/invoices/generate/${report_id}`, '_blank');
@@ -67,51 +197,19 @@ export default function InvoiceDetail() {
       </div>
 
       <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>B2B Services</h3>
-      <div className="table-container" style={{ marginBottom: '2rem' }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Service</th>
-              <th className="text-right">Investment</th>
-            </tr>
-          </thead>
-          <tbody>
-            {b2b.map(item => (
-              <tr key={item.b2b_data_id}>
-                <td>{item.service_name || 'B2B Service'}</td>
-                <td className="text-right">{formatCurrency(item.monthly_investment)}</td>
-              </tr>
-            ))}
-            {b2b.length === 0 && <tr><td colSpan="2" className="text-center">No B2B services for this month.</td></tr>}
-          </tbody>
-        </table>
+      <div className="b2b-container" style={{ marginBottom: '2rem' }}>
+        {b2b.map(item => (
+          <B2BCard key={item.b2b_data_id} item={item} onSave={fetchDetails} formatCurrency={formatCurrency} report={report} />
+        ))}
+        {b2b.length === 0 && <p className="text-center" style={{ padding: '1rem' }}>No B2B services for this month.</p>}
       </div>
 
       <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Offshore Services</h3>
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Employee</th>
-              <th>Role</th>
-              <th className="text-right">Direct Salary</th>
-              <th className="text-right">Indirect Costs</th>
-              <th className="text-right">Markup</th>
-            </tr>
-          </thead>
-          <tbody>
-            {offshore.map(item => (
-              <tr key={item.offshore_data_id}>
-                <td>{item.employee_name}</td>
-                <td>{item.employee_role}</td>
-                <td className="text-right">{formatCurrency(item.mss_direct_salary)}</td>
-                <td className="text-right">{formatCurrency(item.indirect_costs)}</td>
-                <td className="text-right">{formatCurrency(item.agency_markup)}</td>
-              </tr>
-            ))}
-            {offshore.length === 0 && <tr><td colSpan="5" className="text-center">No offshore services for this month.</td></tr>}
-          </tbody>
-        </table>
+      <div className="offshore-container" style={{ marginBottom: '2rem' }}>
+        {offshore.map(item => (
+          <OffshoreCard key={item.offshore_data_id} item={item} formatCurrency={formatCurrency} report={report} />
+        ))}
+        {offshore.length === 0 && <p className="text-center" style={{ padding: '1rem' }}>No offshore services for this month.</p>}
       </div>
     </div>
   );

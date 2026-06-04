@@ -263,6 +263,7 @@ router.post('/confirm', upload.single('file'), (req, res) => {
     }
 
     // 3. Insert B2B
+    const checkB2b = db.prepare(`SELECT 1 FROM b2b_services_data WHERE report_id = ? AND service_name = ?`);
     const insertB2b = db.prepare(`
       INSERT INTO b2b_services_data
       (b2b_data_id, report_id, service_name, monthly_investment)
@@ -270,10 +271,15 @@ router.post('/confirm', upload.single('file'), (req, res) => {
     `);
 
     for (const b2b of parsed.b2b) {
-      insertB2b.run(id('b2b'), b2b.report_id, String(b2b.service_name || 'B2B Service').trim(), b2b.monthly_investment);
+      const sName = String(b2b.service_name || 'B2B Service').trim();
+      const existing = checkB2b.get(b2b.report_id, sName);
+      if (!existing) {
+        insertB2b.run(id('b2b'), b2b.report_id, sName, b2b.monthly_investment);
+      }
     }
 
     // 4. Insert Offshore
+    const checkOffshore = db.prepare(`SELECT 1 FROM offshore_services_data WHERE report_id = ? AND employee_name = ?`);
     const insertOffshore = db.prepare(`
       INSERT INTO offshore_services_data
       (offshore_data_id, report_id, employee_name, employee_role, mss_direct_salary, indirect_costs, agency_markup)
@@ -281,7 +287,11 @@ router.post('/confirm', upload.single('file'), (req, res) => {
     `);
 
     for (const off of parsed.offshore) {
-      insertOffshore.run(id('off'), off.report_id, String(off.employee_name || '').trim(), String(off.employee_role || '').trim(), off.mss_direct_salary, off.indirect_costs, off.agency_markup);
+      const eName = String(off.employee_name || '').trim();
+      const existing = checkOffshore.get(off.report_id, eName);
+      if (!existing) {
+        insertOffshore.run(id('off'), off.report_id, eName, String(off.employee_role || '').trim(), off.mss_direct_salary, off.indirect_costs, off.agency_markup);
+      }
     }
 
     db.exec('COMMIT');

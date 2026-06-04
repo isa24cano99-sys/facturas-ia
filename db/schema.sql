@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS b2b_services_data (
   report_id TEXT,
   service_name TEXT,
   monthly_investment REAL,
+  success_fee TEXT DEFAULT '',
   FOREIGN KEY (report_id) REFERENCES monthly_reports(report_id)
 );
 

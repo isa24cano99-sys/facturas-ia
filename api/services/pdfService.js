@@ -71,16 +71,44 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   if (b2bData && b2bData.length > 0) {
     b2bData.forEach(item => {
       const investment = item.monthly_investment || 0;
+      const successFee = item.success_fee || '';
       totalB2B += investment;
+      
       b2bHtmlRows += `
-        <tr>
-          <td>${item.service_name || 'B2B Service'}</td>
-          <td class="text-right">${formatCurrency(investment)}</td>
-        </tr>
+        <div style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; margin-bottom: 20px; background: #fff;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 0;">
+            <tbody>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Issued to</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.branch_manager_name || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Branch</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.branch_name || ''} &middot; ${report.county || ''}, ${report.state || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Date</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.report_month_display || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Service</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${item.service_name || 'B2B Service'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Monthly Investment</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #ef4444;">${formatCurrency(investment)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Success Fee</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${successFee}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       `;
     });
   } else {
-    b2bHtmlRows = '<tr><td colspan="2" class="no-data">No B2B Services</td></tr>';
+    b2bHtmlRows = '<p class="no-data">No B2B Services</p>';
   }
 
   // ═══════════════════════════════════════════════════════
@@ -95,29 +123,61 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
       const salary = item.mss_direct_salary || 0;
       const costs = item.indirect_costs || 0;
       const markup = item.agency_markup || 0;
-      const effectiveCost = salary + costs; // NO incluir markup
-
+      const effectiveCost = salary + costs;
+      
       totalOffshore += effectiveCost;
       totalMarkupWaived += markup;
 
       offshoreHtmlRows += `
-        <tr>
-          <td class="employee-cell">
-            <div class="employee-name">${item.employee_name || 'Employee'}</div>
-            <div class="employee-role">${item.employee_role || 'Role'}</div>
-          </td>
-          <td class="text-right">${formatCurrency(salary)}</td>
-          <td class="text-right">${formatCurrency(costs)}</td>
-          <td class="text-right markup-cell">
-            <span class="strikethrough">${formatCurrency(markup)}</span>
-            <span class="badge-waived">100% WAIVED</span>
-          </td>
-          <td class="text-right"><strong>${formatCurrency(effectiveCost)}</strong></td>
-        </tr>
+        <div style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; margin-bottom: 20px; background: #fff;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 0;">
+            <tbody>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Issued to</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.branch_manager_name || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Branch</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.branch_name || ''} &middot; ${report.county || ''}, ${report.state || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Date</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${report.report_month_display || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Employee</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${item.employee_name || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Role</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${item.employee_role || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Direct Salary</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${formatCurrency(salary)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Indirect Costs</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">${formatCurrency(costs)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Agency Markup</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #1C3F73;">
+                  <span class="strikethrough" style="text-decoration: line-through; color: #94a3b8; margin-right: 8px;">${formatCurrency(markup)}</span>
+                  <span class="badge-waived" style="background-color: #22c55e; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold;">100% WAIVED</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 14px 20px; color: #888; width: 35%; border-right: 1px solid #e0e0e0;">Effective Cost</td>
+                <td style="padding: 14px 20px; font-weight: 600; color: #ef4444;">${formatCurrency(effectiveCost)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       `;
     });
   } else {
-    offshoreHtmlRows = '<tr><td colspan="5" class="no-data">No Offshore Services</td></tr>';
+    offshoreHtmlRows = '<p class="no-data">No Offshore Services</p>';
   }
 
   // ═══════════════════════════════════════════════════════

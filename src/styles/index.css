@@ -1,44 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Brand Colors - Light theme with coral/red accents */
-  --primary: #e63946;
-  --primary-light: #ff6b6b;
-  --primary-dark: #c1121f;
-  --secondary: #ff8a5c;
-  
-  /* Light Backgrounds (Keeping var names same for compatibility) */
-  --bg-dark: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-card: #ffffff;
-  --bg-elevated: #f1f5f9;
-  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-  
+  /* Brand Colors — HomeSí palette */
+  --primary: #F05A28;          /* Orange-Red (logo, CTAs, highlights) */
+  --primary-light: #FF7A4D;    /* Lighter orange */
+  --primary-dark: #C93F10;     /* Darker orange */
+  --secondary: #F5A623;        /* Amber/Gold accent */
+
+  /* Backgrounds */
+  --bg-dark: #F4F6F9;          /* Very light blue-gray page background */
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #EDF0F5;
+  --bg-gradient: linear-gradient(135deg, #F4F6F9 0%, #EDF0F5 50%, #DDE3EE 100%);
+
   /* Glass on Light */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(230, 57, 70, 0.15);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(240, 90, 40, 0.12);
+  --glass-shadow: 0 8px 32px 0 rgba(28, 46, 94, 0.08);
+
   /* Text */
-  --text-main: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  
+  --text-main: #1C2E5E;        /* Deep navy blue */
+  --text-secondary: #3A4F7A;   /* Medium navy */
+  --text-muted: #8E9AAF;       /* Blue-gray muted */
+
   /* Accent Colors */
   --accent-green: #22c55e;
-  --accent-amber: #f59e0b;
-  --accent-purple: #a855f7;
-  --accent-blue: #3b82f6;
-  
+  --accent-amber: #F5A623;     /* HomeSí gold */
+  --accent-purple: #7C5CBF;
+  --accent-blue: #1C2E5E;      /* HomeSí navy */
+
   /* Utilities */
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  
+
   /* Glow Effects */
-  --glow-primary: 0 0 20px rgba(230, 57, 70, 0.15);
-  --glow-hover: 0 0 30px rgba(230, 57, 70, 0.25);
+  --glow-primary: 0 0 20px rgba(240, 90, 40, 0.15);
+  --glow-hover: 0 0 30px rgba(240, 90, 40, 0.25);
 }
 
 * {
@@ -159,20 +159,20 @@ tr:hover td {
 
 /* File Uploader */
 .dropzone {
-  border: 2px dashed rgba(230, 57, 70, 0.4);
+  border: 2px dashed rgba(165, 216, 245, 0.6);
   border-radius: var(--radius-lg);
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
-  background: rgba(230, 57, 70, 0.03);
+  background: rgba(165, 216, 245, 0.05);
 }
 
 .dropzone:hover, .dropzone.active {
-  background: rgba(230, 57, 70, 0.08);
-  border-color: var(--primary);
+  background: rgba(165, 216, 245, 0.12);
+  border-color: #A5D8F5;
   transform: scale(1.02);
-  box-shadow: var(--glow-primary);
+  box-shadow: 0 0 20px rgba(165, 216, 245, 0.3);
 }
 
 .dropzone-icon {

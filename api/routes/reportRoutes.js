@@ -49,4 +49,57 @@ router.get('/:report_id', (req, res) => {
   }
 });
 
+router.put('/b2b/:b2b_data_id', (req, res) => {
+  try {
+    const db = req.app.get('db');
+    const { b2b_data_id } = req.params;
+    const { service_name, monthly_investment, success_fee } = req.body;
+
+    if (!service_name || typeof monthly_investment !== 'number') {
+      return res.status(400).json({ ok: false, error: 'Invalid input' });
+    }
+
+    db.exec('BEGIN TRANSACTION');
+
+    const result = db.prepare(`
+      UPDATE b2b_services_data 
+      SET service_name = ?, monthly_investment = ?, success_fee = ?
+      WHERE b2b_data_id = ?
+    `).run(service_name, monthly_investment, success_fee || '', b2b_data_id);
+
+    if (result.changes === 0) {
+      db.exec('ROLLBACK');
+      return res.status(404).json({ ok: false, error: 'Record not found' });
+    }
+
+    const b2bRow = db.prepare(`SELECT report_id FROM b2b_services_data WHERE b2b_data_id = ?`).get(b2b_data_id);
+    
+    if (b2bRow) {
+      const report_id = b2bRow.report_id;
+
+      const b2bSum = db.prepare(`
+        SELECT COALESCE(SUM(monthly_investment), 0) as total
+        FROM b2b_services_data
+        WHERE report_id = ?
+      `).get(report_id);
+
+      const b2bTotal = b2bSum?.total || 0;
+
+      db.prepare(`
+        UPDATE invoices
+        SET b2b_total = ?, grand_total = ? + offshore_total
+        WHERE report_id = ?
+      `).run(b2bTotal, b2bTotal, report_id);
+    }
+
+    db.exec('COMMIT');
+    res.json({ ok: true });
+
+  } catch (err) {
+    req.app.get('db').exec('ROLLBACK');
+    console.error(err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 module.exports = router;
