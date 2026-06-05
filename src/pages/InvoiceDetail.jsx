@@ -184,20 +184,20 @@ export default function InvoiceDetail() {
           <div style={{ display: 'flex', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', overflow: 'hidden' }}>
             <div style={{ padding: '0.6rem 1rem', background: 'var(--primary-color)', borderRight: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>B2B</div>
             <button onClick={() => handleDownloadPDF('b2b')} className="btn btn-primary" style={{ borderRadius: 0, border: 'none', padding: '0.6rem 1rem' }}>
-              📄 PDF
+              PDF
             </button>
             <button onClick={() => handleDownloadPNG('b2b')} className="btn btn-primary" style={{ borderRadius: 0, border: 'none', borderLeft: '1px solid rgba(255,255,255,0.2)', padding: '0.6rem 1rem' }}>
-              🖼️ PNG
+              PNG
             </button>
           </div>
 
           <div style={{ display: 'flex', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', overflow: 'hidden' }}>
             <div style={{ padding: '0.6rem 1rem', background: '#e0a816', color: '#001A40', borderRight: '1px solid rgba(255,255,255,0.2)', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>Offshore</div>
             <button onClick={() => handleDownloadPDF('offshore')} className="btn btn-accent" style={{ borderRadius: 0, border: 'none', padding: '0.6rem 1rem' }}>
-              📄 PDF
+              PDF
             </button>
             <button onClick={() => handleDownloadPNG('offshore')} className="btn btn-accent" style={{ borderRadius: 0, border: 'none', borderLeft: '1px solid rgba(0,26,64,0.1)', padding: '0.6rem 1rem' }}>
-              🖼️ PNG
+              PNG
             </button>
           </div>
         </div>

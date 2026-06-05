@@ -145,7 +145,7 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                         onClick={() => onSelectInvoice(invoice)}
                         style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '6px' }}
                       >
-                        👁️ Preview
+                        Preview
                       </button>
 
                       {(invoice.invoice_type === 'b2b' || invoice.invoice_type === 'combined') && (
