@@ -61,7 +61,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
 
     const rows = [
       { label: "Issued to", value: invoice.branch_manager_name || 'N/A' },
-      { label: "Branch", value: `${invoice.branch_name || ''} · ${invoice.county || ''}, ${invoice.state || ''}` },
+      { label: "Branch", value: invoice.branch_name || 'N/A' },
       { label: "Date", value: invoice.report_month_display || '' },
       { label: "Service", value: (
         <input 
@@ -121,7 +121,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
     const subtotal = item.mss_direct_salary + item.indirect_costs + item.agency_markup;
     const rows = [
       { label: "Issued to", value: invoice.branch_manager_name || 'N/A' },
-      { label: "Branch", value: `${invoice.branch_name || ''} · ${invoice.county || ''}, ${invoice.state || ''}` },
+      { label: "Branch", value: invoice.branch_name || 'N/A' },
       { label: "Date", value: invoice.report_month_display || '' },
       { label: "Employee", value: item.employee_name || 'N/A' },
       { label: "Role", value: item.employee_role || 'N/A' },
@@ -192,7 +192,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
                 </div>
                 <div className="info-item">
                   <label>Location</label>
-                  <p>{invoice.county}, {invoice.state}</p>
+                  <p>{invoice.branch_name}</p>
                 </div>
                 <div className="info-item">
                   <label>Manager</label>

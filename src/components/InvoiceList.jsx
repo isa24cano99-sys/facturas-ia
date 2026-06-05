@@ -129,7 +129,7 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                 <tr key={invoice.invoice_id} className={`row-${invoice.invoice_type}`}>
                   <td className="mono">{invoice.branch_id}</td>
                   <td>{invoice.branch_name}</td>
-                  <td>{invoice.county}, {invoice.state}</td>
+                  <td>{invoice.branch_name}</td>
                   <td>{invoice.branch_manager_name}</td>
                   <td>
                     <span className={`badge badge-${invoice.invoice_type}`}>
