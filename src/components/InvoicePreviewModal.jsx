@@ -37,9 +37,9 @@ function B2BCard({ item, onSave, invoice }) {
 
   const inputStyle = {
     width: '100%', padding: '8px 10px',
-    borderRadius: '8px', border: '1px solid #C8D8E8',
+    borderRadius: '8px', border: '1px solid var(--border)',
     fontSize: '14px', fontFamily: 'Inter, sans-serif',
-    color: '#001A40', background: '#FCFCFA', outline: 'none'
+    color: 'var(--navy)', background: 'var(--offwhite)', outline: 'none'
   };
 
   const rows = [
@@ -130,16 +130,16 @@ function OffshoreCard({ item, invoice }) {
 function DataCard({ rows }) {
   return (
     <div style={{
-      border: '1px solid #A6DEFF', borderRadius: 12,
-      overflow: 'hidden', marginBottom: '1rem', background: '#fff'
+      border: '1px solid var(--border)', borderRadius: 12,
+      overflow: 'hidden', marginBottom: '1rem', background: 'var(--bg-card)'
     }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} style={{ borderBottom: i < rows.length - 1 ? '1px solid #E8F4FF' : 'none' }}>
+            <tr key={i} style={{ borderBottom: i < rows.length - 1 ? '1px solid var(--border)' : 'none' }}>
               <td style={{
-                padding: '12px 18px', color: '#7A8BA8',
-                width: '35%', borderRight: '1px solid #E8F4FF',
+                padding: '12px 18px', color: 'var(--text-muted)',
+                width: '35%', borderRight: '1px solid var(--border)',
                 fontWeight: 600, fontSize: 13
               }}>
                 {row.label}

@@ -73,12 +73,12 @@ export default function InvoiceDetail() {
       ) },
       { label: "Monthly Investment", highlight: true, value: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: '#d44f1e' }}>$</span>
+          <span style={{ color: '#FF4040' }}>$</span>
           <input 
             type="number" 
             value={investment} 
             onChange={e => setInvestment(e.target.value)}
-            style={{ width: '120px', padding: '6px', borderRadius: '4px', border: '1px solid #d44f1e', color: '#d44f1e', fontWeight: 'bold' }}
+            style={{ width: '120px', padding: '6px', borderRadius: '4px', border: '1px solid #FF4040', color: '#FF4040', fontWeight: 'bold' }}
             step="0.01"
           />
         </div>
@@ -93,20 +93,20 @@ export default function InvoiceDetail() {
         />
       ) },
       { label: "", value: (
-        <button onClick={handleSave} disabled={saving} style={{ padding: '8px 16px', fontSize: '0.9rem', cursor: 'pointer', borderRadius: '4px', border: 'none', background: '#1C3F73', color: '#fff', fontWeight: '600' }}>
+        <button onClick={handleSave} disabled={saving} style={{ padding: '8px 16px', fontSize: '0.9rem', cursor: 'pointer', borderRadius: '4px', border: 'none', background: 'var(--red)', color: '#fff', fontWeight: '600' }}>
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       ) }
     ];
 
     return (
-      <div style={{ border: "1px solid #e0e0e0", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: '#fff' }}>
+      <div style={{ border: "1px solid var(--border)", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: 'var(--bg-card)' }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid #e0e0e0" : "none" }}>
-                <td style={{ padding: "14px 20px", color: "#888", width: "35%", borderRight: "1px solid #e0e0e0" }}>{row.label}</td>
-                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "#ef4444" : "#1C3F73" }}>
+              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid var(--border)" : "none" }}>
+                <td style={{ padding: "14px 20px", color: "var(--text-muted)", width: "35%", borderRight: "1px solid var(--border)" }}>{row.label}</td>
+                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "var(--red)" : "var(--navy)" }}>
                   {row.value}
                 </td>
               </tr>
@@ -130,20 +130,20 @@ export default function InvoiceDetail() {
       { label: "Agency Markup", value: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span className="strikethrough" style={{ textDecoration: 'line-through', color: '#94a3b8' }}>{formatCurrency(item.agency_markup)}</span>
-          <span className="badge-waived" style={{ backgroundColor: '#22c55e', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold' }}>100% WAIVED</span>
+          <span className="badge-waived" style={{ backgroundColor: 'var(--red)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 'bold' }}>100% WAIVED</span>
         </div>
       ) },
       { label: "Effective Cost", highlight: true, value: formatCurrency(subtotal) },
     ];
 
     return (
-      <div style={{ border: "1px solid #e0e0e0", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: '#fff' }}>
+      <div style={{ border: "1px solid var(--border)", borderRadius: "8px", overflow: "hidden", marginBottom: '1.5rem', background: 'var(--bg-card)' }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid #e0e0e0" : "none" }}>
-                <td style={{ padding: "14px 20px", color: "#888", width: "35%", borderRight: "1px solid #e0e0e0" }}>{row.label}</td>
-                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "#ef4444" : "#1C3F73" }}>
+              <tr key={i} style={{ borderBottom: i < rows.length - 1 ? "1px solid var(--border)" : "none" }}>
+                <td style={{ padding: "14px 20px", color: "var(--text-muted)", width: "35%", borderRight: "1px solid var(--border)" }}>{row.label}</td>
+                <td style={{ padding: "14px 20px", fontWeight: 600, color: row.highlight ? "var(--red)" : "var(--navy)" }}>
                   {row.value}
                 </td>
               </tr>
@@ -186,7 +186,7 @@ export default function InvoiceDetail() {
         <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <h4>Branch Information</h4>
           <p><strong>ID:</strong> {report.branch_id}</p>
-          <p><strong>Location:</strong> {report.county}, {report.state}</p>
+          <p><strong>Location:</strong> {report.branch_name}</p>
           <p><strong>Manager:</strong> {report.branch_manager_name}</p>
         </div>
         <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>

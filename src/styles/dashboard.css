@@ -655,7 +655,7 @@
 
 .badge-waived {
   display: inline-block;
-  background: #22c55e;
+  background: var(--red);
   color: white;
   padding: 2px 8px;
   border-radius: 9999px;

@@ -58,26 +58,26 @@ function buildB2bSection(b2bData, report, formatCur) {
     const successFee = item.success_fee || '';
     totalB2B += investment;
 
-    rows += '<div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;margin-bottom:20px;background:#fff;">';
-    rows += '<table style="width:100%;border-collapse:collapse;font-size:14px;">';
+    rows += '<div class="data-card">';
+    rows += '<table>';
     rows += '<tbody>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;width:35%;border-right:1px solid #e0e0e0;">Issued to</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.branch_manager_name || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Branch</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.branch_name || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Date</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.report_month_display || '') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Service</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (item.service_name || 'B2B Service') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Monthly Investment</td><td style="padding:14px 20px;font-weight:600;color:#ef4444;">' + formatCur(investment) + ' / month</td></tr>';
-    rows += '<tr><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Success Fee</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + successFee + '</td></tr>';
+    rows += '<tr><td class="cell-label">Issued to</td><td class="cell-value">' + (report.branch_manager_name || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Branch</td><td class="cell-value">' + (report.branch_name || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Date</td><td class="cell-value">' + (report.report_month_display || '') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Service</td><td class="cell-value">' + (item.service_name || 'B2B Service') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Monthly Investment</td><td class="cell-value accent">' + formatCur(investment) + ' / month</td></tr>';
+    rows += '<tr><td class="cell-label">Success Fee</td><td class="cell-value">' + successFee + '</td></tr>';
     rows += '</tbody></table></div>';
   });
 
-  const section = '<div style="margin-bottom:30px;">'
-    + '<h2 style="color:#1C3F73;font-size:26px;margin:0 0 5px 0;font-weight:700;font-family:Georgia,serif;letter-spacing:-0.5px;">Strategic Investment Confirmation</h2>'
-    + '<div style="color:#888;font-style:italic;font-size:14px;margin-bottom:20px;">B2B System Engine &middot; Full Package</div>'
-    + '<div style="border-top:1px solid #e0e0e0;margin-bottom:20px;"></div>'
+  const section = '<div class="section-header">'
+    + '<h2>Strategic Investment Confirmation</h2>'
+    + '<div class="section-subtitle">B2B System Engine &middot; Full Package</div>'
     + '</div>'
     + rows
-    + '<div style="text-align:right;margin-bottom:40px;border-top:2px solid #e0e0e0;padding-top:15px;">'
-    + '<p style="font-size:18px;color:#1C3F73;margin:0;"><strong>B2B Total:</strong> ' + formatCur(totalB2B) + '</p>'
+    + '<div class="section-total">'
+    + '<p class="total-label">B2B Total</p>'
+    + '<p class="total-amount">' + formatCur(totalB2B) + '</p>'
     + '</div>';
 
   return { html: section, total: totalB2B };
@@ -97,29 +97,33 @@ function buildOffshoreSection(offshoreData, report, formatCur) {
     totalOffshore += effectiveCost;
     totalMarkup += markup;
 
-    rows += '<div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;margin-bottom:20px;background:#fff;">';
-    rows += '<table style="width:100%;border-collapse:collapse;font-size:14px;">';
+    rows += '<div class="data-card">';
+    rows += '<table>';
     rows += '<tbody>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;width:35%;border-right:1px solid #e0e0e0;">Issued to</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.branch_manager_name || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Branch</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.branch_name || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Date</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (report.report_month_display || '') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Employee</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (item.employee_name || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Role</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + (item.employee_role || 'N/A') + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Direct Salary</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + formatCur(salary) + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Indirect Costs</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">' + formatCur(costs) + '</td></tr>';
-    rows += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Agency Markup</td><td style="padding:14px 20px;font-weight:600;color:#1C3F73;">'
-      + '<span style="text-decoration:line-through;color:#94a3b8;margin-right:8px;">' + formatCur(markup) + '</span>'
-      + '<span style="background-color:#22c55e;color:white;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:bold;">100% WAIVED</span>'
+    rows += '<tr><td class="cell-label">Issued to</td><td class="cell-value">' + (report.branch_manager_name || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Branch</td><td class="cell-value">' + (report.branch_name || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Date</td><td class="cell-value">' + (report.report_month_display || '') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Employee</td><td class="cell-value">' + (item.employee_name || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Role</td><td class="cell-value">' + (item.employee_role || 'N/A') + '</td></tr>';
+    rows += '<tr><td class="cell-label">Direct Salary</td><td class="cell-value">' + formatCur(salary) + '</td></tr>';
+    rows += '<tr><td class="cell-label">Indirect Costs</td><td class="cell-value">' + formatCur(costs) + '</td></tr>';
+    rows += '<tr><td class="cell-label">Agency Markup</td><td class="cell-value">'
+      + '<span class="strikethrough">' + formatCur(markup) + '</span>'
+      + '<span class="badge-waived">100% WAIVED</span>'
       + '</td></tr>';
-    rows += '<tr><td style="padding:14px 20px;color:#888;border-right:1px solid #e0e0e0;">Effective Cost</td><td style="padding:14px 20px;font-weight:600;color:#ef4444;">' + formatCur(effectiveCost) + '</td></tr>';
+    rows += '<tr><td class="cell-label">Effective Cost</td><td class="cell-value accent">' + formatCur(effectiveCost) + '</td></tr>';
     rows += '</tbody></table></div>';
   });
 
-  const section = '<h2 class="section-title" style="margin-bottom:20px;color:#1C3F73;font-size:24px;">Offshore Services</h2>'
+  const section = '<div class="section-header">'
+    + '<h2>Offshore Services</h2>'
+    + '<div class="section-subtitle">Dedicated Talent Acquisition &amp; Management</div>'
+    + '</div>'
     + rows
-    + '<div style="text-align:right;margin-bottom:40px;border-top:2px solid #e0e0e0;padding-top:15px;">'
-    + '<p style="font-size:14px;color:#888;margin:0 0 5px 0;">Markup Waived: <span style="text-decoration:line-through;">' + formatCur(totalMarkup) + '</span></p>'
-    + '<p style="font-size:18px;color:#1C3F73;margin:0;"><strong>Offshore Total:</strong> ' + formatCur(totalOffshore) + '</p>'
+    + '<div class="section-total">'
+    + '<p class="markup-note">Markup Waived: <span class="strikethrough">' + formatCur(totalMarkup) + '</span></p>'
+    + '<p class="total-label">Offshore Total</p>'
+    + '<p class="total-amount">' + formatCur(totalOffshore) + '</p>'
     + '</div>';
 
   return { html: section, total: totalOffshore, markup: totalMarkup };

@@ -1,223 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=Inter:wght@400;700&display=swap"
+    rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    
+    /* ── HomeSí Brand Tokens ─────────────────────── */
     :root {
-      --primary: #1C3F73;
-      --text: #334155;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --bg-light: #f8fafc;
-      --success: #22c55e;
+      --navy: #001A40;
+      --red: #FF4040;
+      --sky: #A6DEFF;
+      --yellow: #F5C542;
+      --offwhite: #FCFCFA;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
     }
 
-    * { box-sizing: border-box; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 40px;
-      color: var(--text);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
+      color: var(--navy);
+      background: var(--offwhite);
     }
 
-    .header {
+    /* ── CONFIDENTIAL banner ─────────────────────── */
+    .confidential-bar {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      padding: 8px 0;
+      background: var(--offwhite);
+    }
+
+    /* ── Top header bar ──────────────────────────── */
+    .header-bar {
+      background: var(--navy);
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 20px;
-      margin-bottom: 30px;
+      align-items: center;
     }
 
-    .header h1 {
-      color: var(--primary);
-      margin: 0 0 10px 0;
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-text-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
       font-size: 28px;
+      color: var(--white);
+      letter-spacing: -0.5px;
+      line-height: 1;
     }
 
-    .invoice-details {
-      text-align: right;
+    .brand-tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--sky);
+      margin-top: 3px;
     }
-    
-    .invoice-details table {
-      width: auto;
+
+    .header-right {
+      text-align: right;
+      color: var(--white);
+    }
+
+    .header-right .report-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: var(--sky);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .header-right table {
       margin-left: auto;
+      width: auto;
+      border-collapse: collapse;
+      margin-bottom: 0;
     }
-    .invoice-details td {
-      padding: 4px 8px;
+
+    .header-right td {
+      padding: 3px 6px;
       border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--white);
+      background: transparent;
     }
-    .invoice-details td:first-child {
-      font-weight: 600;
-      color: var(--text-muted);
+
+    .header-right td:first-child {
+      color: var(--sky);
       text-align: right;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .bill-to {
-      margin-bottom: 30px;
-      background: var(--bg-light);
-      padding: 20px;
-      border-radius: 8px;
+    /* ── Red accent line below header ────────────── */
+    .header-accent {
+      height: 4px;
+      background: var(--red);
+    }
+
+    /* ── Page body padding ───────────────────────── */
+    .page-body {
+      padding: 32px 40px 40px 40px;
+      background: var(--offwhite);
+    }
+
+    /* ── ISSUE TO card ───────────────────────────── */
+    .issue-to-card {
+      background: var(--white);
       border: 1px solid var(--border);
-    }
-    
-    .bill-to h3 {
-      margin: 0 0 10px 0;
-      color: var(--primary);
-      font-size: 16px;
+      border-radius: 12px;
+      padding: 20px 28px;
+      margin-bottom: 32px;
     }
 
-    .bill-to p {
-      margin: 4px 0;
+    .issue-to-label {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--red);
+      margin-bottom: 14px;
     }
 
-    h2.section-title {
-      color: var(--primary);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-      margin-top: 30px;
-      font-size: 18px;
+    .issue-to-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
     }
 
-    table {
+    .issue-to-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .issue-to-field p {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 0;
+    }
+
+    /* ── Section titles ──────────────────────────── */
+    .section-header {
+      margin-bottom: 18px;
+      margin-top: 32px;
+    }
+
+    .section-header h2 {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--navy);
+      border-left: 4px solid var(--red);
+      padding-left: 12px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .section-header .section-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 16px;
+    }
+
+    /* ── Data row cards ──────────────────────────── */
+    .data-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .data-card table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      font-size: 14px;
+      margin-bottom: 0;
     }
 
-    th {
-      background-color: var(--primary);
-      color: white;
-      text-align: left;
-      padding: 12px;
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    td {
-      padding: 12px;
+    .data-card tr {
       border-bottom: 1px solid var(--border);
-    }
-
-    tr {
       page-break-inside: avoid;
     }
 
-    tr:nth-child(even) {
-      background-color: #f1f5f9;
+    .data-card tr:last-child {
+      border-bottom: none;
     }
 
-    .text-right {
-      text-align: right;
+    .data-card td {
+      padding: 13px 20px;
+      border: none;
     }
 
-    .text-center {
-      text-align: center;
+    .data-card .cell-label {
+      color: var(--muted);
+      width: 35%;
+      border-right: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 400;
     }
 
+    .data-card .cell-value {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .data-card .cell-value.accent {
+      color: var(--red);
+    }
+
+    /* ── Waived badge ────────────────────────────── */
     .badge-waived {
-      background-color: var(--success);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
+      background: var(--red);
+      color: var(--white);
+      padding: 3px 10px;
+      border-radius: 20px;
       font-size: 10px;
-      font-weight: bold;
-      margin-left: 8px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
       display: inline-block;
+      margin-left: 8px;
     }
 
     .strikethrough {
       text-decoration: line-through;
-      color: var(--text-muted);
+      color: var(--muted);
     }
 
-    .totals {
-      width: 350px;
-      margin-left: auto;
-      margin-top: 30px;
+    /* ── Section total row ───────────────────────── */
+    .section-total {
+      text-align: right;
+      padding: 14px 0;
+      border-top: 3px solid var(--red);
+      margin-top: 4px;
+      margin-bottom: 24px;
     }
 
-    .totals table td {
-      padding: 8px 12px;
-      border: none;
-    }
-    
-    .totals table tr {
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .totals table tr:last-child {
-      border-bottom: none;
+    .section-total .total-label {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 14px;
+      margin-bottom: 4px;
     }
 
-    .totals table td:first-child {
-      font-weight: 600;
+    .section-total .total-amount {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--red);
     }
 
-    .grand-total {
-      background-color: var(--primary);
-      color: white;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    
-    .grand-total td {
-      padding: 12px !important;
-      color: white !important;
-    }
-
-    .footer {
-      margin-top: 50px;
-      text-align: center;
-      color: var(--text-muted);
+    .section-total .markup-note {
+      color: var(--muted);
       font-size: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 18px;
+      border-top: 2px solid var(--navy);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Utility ─────────────────────────────────── */
+    .no-data {
+      color: var(--muted);
+      font-style: normal;
+      font-size: 13px;
+      padding: 12px 0;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="header">
-    <div>
-      <h1>HomeSí / Supreme Lending</h1>
-      <p style="margin: 0; color: var(--text-muted);">Pricing & Performance Report</p>
+  <!-- CONFIDENTIAL -->
+  <div class="confidential-bar"> &mdash; For Internal Use Only</div>
+
+  <!-- HEADER BAR -->
+  <div class="header-bar">
+    <!-- Left: Logomark + Brand -->
+    <div class="header-brand">
+      <!-- HOMESÍ SVG logomark -->
+      <svg width="44" height="44" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="8" fill="#FF4040" />
+        <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <div class="brand-text-block">
+        <span class="brand-name">HOMESÍ</span>
+        <span class="brand-tagline">Powered by Supreme Lending</span>
+      </div>
     </div>
-    <div class="invoice-details">
+
+    <!-- Right: Report details -->
+    <div class="header-right">
+      <p class="report-label">Pricing &amp; Performance Report</p>
       <table>
         <tr>
           <td>Invoice Number:</td>
-          <td>{{INVOICE_NUMBER}}</td>
+          <td><strong>{{INVOICE_NUMBER}}</strong></td>
         </tr>
         <tr>
           <td>Invoice Date:</td>
           <td>{{INVOICE_DATE}}</td>
         </tr>
         <tr>
-          <td>Month:</td>
+          <td>Period:</td>
           <td>{{MONTH}}</td>
         </tr>
       </table>
     </div>
   </div>
 
-  <div class="bill-to">
-    <h3>Issue To</h3>
-    <p><strong>Branch:</strong> {{BRANCH_NAME}} (ID: {{BRANCH_ID}})</p>
-    <p><strong>Manager:</strong> {{BRANCH_MANAGER}} - {{BRANCH_EMAIL}}</p>
-    <p><strong>Location:</strong> {{BRANCH_NAME}}</p>
+  <!-- Red accent line -->
+  <div class="header-accent"></div>
+
+  <!-- PAGE BODY -->
+  <div class="page-body">
+
+    <!-- ISSUE TO card -->
+    <div class="issue-to-card">
+      <p class="issue-to-label">Issue To</p>
+      <div class="issue-to-grid">
+        <div class="issue-to-field">
+          <label>Branch</label>
+          <p>{{BRANCH_NAME}}</p>
+        </div>
+        <div class="issue-to-field">
+          <label>Manager</label>
+          <p>{{BRANCH_MANAGER}}</p>
+        </div>
+        <div class="issue-to-field">
+          <label>Location</label>
+          <p>{{BRANCH_NAME}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTIONS — injected by pdfService.js -->
+    {{B2B_SECTION}}
+    {{OFFSHORE_SECTION}}
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-left">
+        <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="#FF4040" />
+          <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>homesidivision.com &nbsp;&bull;&nbsp; @homesidivision</span>
+      </div>
+      <div class="footer-right">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="#FF4040" />
+          <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </div>
+
   </div>
-
-  {{B2B_SECTION}}
-  {{OFFSHORE_SECTION}}
-
-  <div class="footer">
-    <p>Thank you for your business. For any inquiries, please contact support.</p>
-  </div>
-
 </body>
+
 </html>
