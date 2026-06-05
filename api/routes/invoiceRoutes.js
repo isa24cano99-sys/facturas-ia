@@ -5,11 +5,12 @@ const router = express.Router();
 const { generateInvoicePDF, generateBatchInvoicePDFs } = require('../services/pdfService');
 const archiver = require('archiver');
 
-// Individual PDF Generation
+// Individual PDF Generation — supports ?type=b2b or ?type=offshore
 router.get('/generate/:report_id', async (req, res) => {
   try {
     const db = req.app.get('db');
     const report_id = req.params.report_id;
+    const type = req.query.type || 'combined'; // 'b2b', 'offshore', or 'combined'
 
     const report = db.prepare(`
       SELECT r.*, b.branch_name, b.county, b.state, b.branch_manager_name, b.branch_manager_email
@@ -22,19 +23,10 @@ router.get('/generate/:report_id', async (req, res) => {
       return res.status(404).json({ ok: false, error: 'Report not found' });
     }
 
-    const type = req.query.type; // 'b2b', 'offshore', or undefined (all)
+    const b2bData = db.prepare(`SELECT * FROM b2b_services_data WHERE report_id = ?`).all(report_id);
+    const offshoreData = db.prepare(`SELECT * FROM offshore_services_data WHERE report_id = ?`).all(report_id);
 
-    let b2bData = [];
-    let offshoreData = [];
-
-    if (!type || type === 'b2b') {
-      b2bData = db.prepare(`SELECT * FROM b2b_services_data WHERE report_id = ?`).all(report_id);
-    }
-    if (!type || type === 'offshore') {
-      offshoreData = db.prepare(`SELECT * FROM offshore_services_data WHERE report_id = ?`).all(report_id);
-    }
-
-    const pdfData = await generateInvoicePDF(report, b2bData, offshoreData, null, type || 'all');
+    const pdfData = await generateInvoicePDF(report, b2bData, offshoreData, type);
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${pdfData.filename}"`);

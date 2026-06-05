@@ -239,31 +239,27 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
               </section>
             )}
 
+            {/* Grand Total */}
+            <section className="preview-section grand-total-section">
+              <div className="grand-total">
+                <h3>Grand Total</h3>
+                <p className="grand-total-amount">{formatCurrency(invoice.grand_total)}</p>
+              </div>
+            </section>
           </div>
         )}
 
         {/* Footer */}
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={onClose}>Close</button>
-          {invoice.report_id && (invoice.invoice_type === 'b2b' || invoice.invoice_type === 'combined') && (
+          {invoice.report_id && (
             <a 
-              href={`${API}/api/invoices/generate/${invoice.report_id}?type=b2b`}
+              href={`${API}/api/invoices/generate/${invoice.report_id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-primary"
             >
-              Download PDF (B2B)
-            </a>
-          )}
-          {invoice.report_id && (invoice.invoice_type === 'offshore' || invoice.invoice_type === 'combined') && (
-            <a 
-              href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary"
-              style={{ backgroundColor: '#0284c7', borderColor: '#0284c7' }}
-            >
-              Download PDF (Offshore)
+              Download PDF
             </a>
           )}
         </div>

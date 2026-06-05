@@ -125,6 +125,18 @@ h1 {
   transform: translateY(-2px);
 }
 
+.btn-accent {
+  background: linear-gradient(135deg, #F05A28 0%, #d44a1a 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(240, 90, 40, 0.35);
+}
+
+.btn-accent:hover {
+  background: linear-gradient(135deg, #f36b3b 0%, #F05A28 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 90, 40, 0.45);
+}
+
 /* Tables */
 .table-container {
   overflow-x: auto;

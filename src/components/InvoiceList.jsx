@@ -151,8 +151,9 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                           target="_blank"
                           rel="noopener noreferrer"
                           className="btn btn-sm btn-primary"
+                          title="Download B2B PDF"
                         >
-                          PDF (B2B)
+                          B2B PDF
                         </a>
                       )}
                       {(invoice.invoice_type === 'offshore' || invoice.invoice_type === 'combined') && (
@@ -160,10 +161,10 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                           href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-sm btn-primary"
-                          style={{ backgroundColor: '#0284c7', borderColor: '#0284c7' }}
+                          className="btn btn-sm btn-accent"
+                          title="Download Offshore PDF"
                         >
-                          PDF (Offshore)
+                          Offshore PDF
                         </a>
                       )}
                     </div>
