@@ -11,16 +11,11 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  // Fetch invoices cuando cambia mes, búsqueda, tipo o hay un refresh
   useEffect(() => {
     if (!month) return;
-
     setLoading(true);
-    const params = new URLSearchParams({
-      month,
-      search,
-      type: typeFilter
-    });
+
+    const params = new URLSearchParams({ month, search, type: typeFilter });
 
     Promise.all([
       fetch(`${API}/api/dashboard/invoices?${params}`).then(r => r.json()),
@@ -37,17 +32,13 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
       });
   }, [month, search, typeFilter, refreshTrigger]);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0);
-  };
-
-  const handlePreview = (invoice) => {
-    onSelectInvoice(invoice);
-  };
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0);
 
   return (
     <div className="invoice-list-container">
-      {/* Estadísticas */}
+
+      {/* ── Stat Cards ───────────────────────────────────── */}
       {stats && (
         <div className="stats-grid">
           <div className="stat-card total">
@@ -69,47 +60,53 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
         </div>
       )}
 
-      {/* Búsqueda y Filtros */}
-      <div className="filters-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
-          <input
-            type="text"
-            placeholder="Search by branch ID, name, or manager..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
+      {/* ── Filters ──────────────────────────────────────── */}
+      <div className="filters-bar">
+        <input
+          type="text"
+          placeholder="Search by branch or manager…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+        />
 
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Types</option>
-            <option value="b2b">B2B Only</option>
-            <option value="offshore">Offshore Only</option>
-            <option value="combined">Combined</option>
-          </select>
-        </div>
-        
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          className="filter-select"
+        >
+          <option value="all">All Types</option>
+          <option value="b2b">B2B Only</option>
+          <option value="offshore">Offshore Only</option>
+          <option value="combined">Combined</option>
+        </select>
+
         {month && (
-          <a 
+          <a
             href={`${API}/api/invoices/generate-batch/${month}`}
-            className="btn btn-primary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+            className="btn btn-secondary btn-sm"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
           >
-            Download All (ZIP)
+            ↓ Download All (ZIP)
           </a>
         )}
       </div>
 
-      {/* Lista de Invoices */}
+      {/* ── Table ────────────────────────────────────────── */}
       {loading ? (
-        <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>Loading invoices...</p>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+          Loading invoices…
+        </div>
       ) : invoices.length === 0 ? (
-        <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+        <div style={{
+          textAlign: 'center', padding: '3rem',
+          background: 'var(--white)',
+          border: 'var(--border-card)',
+          borderRadius: 'var(--radius-card)',
+          color: 'var(--text-muted)'
+        }}>
           No invoices found for the selected criteria.
-        </p>
+        </div>
       ) : (
         <div className="invoices-table-container">
           <table className="invoices-table">
@@ -120,33 +117,38 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                 <th>Location</th>
                 <th>Manager</th>
                 <th>Type</th>
-                <th>Total</th>
+                <th style={{ textAlign: 'right' }}>Total</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {invoices.map(invoice => (
-                <tr key={invoice.invoice_id} className={`row-${invoice.invoice_type}`}>
+                <tr key={invoice.invoice_id}>
                   <td className="mono">{invoice.branch_id}</td>
-                  <td>{invoice.branch_name}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{invoice.branch_name}</td>
                   <td>{invoice.branch_name}</td>
                   <td>{invoice.branch_manager_name}</td>
                   <td>
                     <span className={`badge badge-${invoice.invoice_type}`}>
-                      {invoice.invoice_type === 'b2b' ? 'B2B' : invoice.invoice_type === 'offshore' ? 'Offshore' : 'Combined'}
+                      {invoice.invoice_type === 'b2b'
+                        ? 'B2B'
+                        : invoice.invoice_type === 'offshore'
+                        ? 'Offshore'
+                        : 'Combined'}
                     </span>
                   </td>
                   <td className="text-right">{formatCurrency(invoice.grand_total)}</td>
                   <td>
                     <div className="action-buttons">
-                      <button 
+                      <button
                         className="btn btn-sm btn-secondary"
-                        onClick={() => handlePreview(invoice)}
+                        onClick={() => onSelectInvoice(invoice)}
                       >
                         Preview
                       </button>
+
                       {(invoice.invoice_type === 'b2b' || invoice.invoice_type === 'combined') && (
-                        <a 
+                        <a
                           href={`${API}/api/invoices/generate/${invoice.report_id}?type=b2b`}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -156,8 +158,9 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                           B2B PDF
                         </a>
                       )}
+
                       {(invoice.invoice_type === 'offshore' || invoice.invoice_type === 'combined') && (
-                        <a 
+                        <a
                           href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
                           target="_blank"
                           rel="noopener noreferrer"

@@ -22,16 +22,25 @@ export default function Branches() {
   }, []);
 
   return (
-    <div className="glass-panel" style={{ padding: '2rem' }}>
-      <h2>Registered Branches</h2>
-      <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>List of all branches imported into the system.</p>
-      
-      {loading ? <p>Loading...</p> : (
+    <div style={{ padding: '2rem 2.5rem', background: 'var(--offwhite)', minHeight: '100vh' }}>
+      {/* Page Header */}
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ color: 'var(--navy)', marginBottom: '0.4rem' }}>Branches</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '15px' }}>
+          All branches imported into the system
+        </p>
+      </div>
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+          Loading branches…
+        </div>
+      ) : (
         <div className="table-container">
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Branch ID</th>
                 <th>Name</th>
                 <th>Location</th>
                 <th>Manager</th>
@@ -41,16 +50,20 @@ export default function Branches() {
             <tbody>
               {branches.map(b => (
                 <tr key={b.branch_id}>
-                  <td>{b.branch_id}</td>
+                  <td className="mono" style={{ fontFamily: 'Monaco, monospace', fontSize: '13px', color: 'var(--text-muted)' }}>
+                    {b.branch_id}
+                  </td>
+                  <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{b.branch_name}</td>
                   <td>{b.branch_name}</td>
-                  <td>{b.county}, {b.state}</td>
                   <td>{b.branch_manager_name}</td>
-                  <td>{b.branch_manager_email}</td>
+                  <td style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{b.branch_manager_email}</td>
                 </tr>
               ))}
               {branches.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="text-center">No branches found. Import data first.</td>
+                  <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                    No branches found. Import data first.
+                  </td>
                 </tr>
               )}
             </tbody>

@@ -1,21 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Header() {
+  const location = useLocation();
+
   return (
-    <header className="glass-panel" style={{ padding: '1rem 2rem', marginBottom: '0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '0', borderBottom: '1px solid rgba(230, 57, 70, 0.12)' }}>
-      <div>
-        <h2 style={{ margin: 0 }}>
-          <span style={{ color: '#1e3a8a' }}>Home</span>
-          <span style={{ color: '#e63946' }}>Sí</span> 
-          <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: '10px' }}>
-            powered by Supreme Lending
-          </span>
-        </h2>
-      </div>
-      <nav style={{ display: 'flex', gap: '1rem' }}>
-        <Link to="/" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Dashboard</Link>
-        <Link to="/branches" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Branches</Link>
+    <header className="app-header">
+      {/* Brand */}
+      <Link to="/" className="header-brand" style={{ textDecoration: 'none' }}>
+        {/* Red rounded-square badge with white chevrons — HOMESÍ logomark */}
+        <div className="brand-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
+               strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15" />
+            <polyline points="18 20 12 14 6 20" />
+          </svg>
+        </div>
+        <div>
+          <p className="brand-name">HOMESÍ</p>
+          <span className="brand-tagline">powered by Supreme Lending</span>
+        </div>
+      </Link>
+
+      {/* Nav */}
+      <nav className="header-nav">
+        <Link
+          to="/"
+          className={`btn btn-sm ${location.pathname === '/' ? 'btn-primary' : 'btn-secondary'}`}
+        >
+          Dashboard
+        </Link>
+        <Link
+          to="/branches"
+          className={`btn btn-sm ${location.pathname === '/branches' ? 'btn-primary' : 'btn-secondary'}`}
+        >
+          Branches
+        </Link>
       </nav>
     </header>
   );
