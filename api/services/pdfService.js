@@ -166,15 +166,26 @@ async function generateInvoicePDF(report, b2bData, offshoreData, type, browserIn
   html = html.replace('{{B2B_SECTION}}', b2bSectionHtml);
   html = html.replace('{{OFFSHORE_SECTION}}', offshoreSectionHtml);
 
-  // Launch or reuse browser
-  if (!browserInstance && !globalBrowser) {
+  // Ensure browser is alive — recreate if crashed or closed
+  async function getOrCreateBrowser() {
+    if (globalBrowser) {
+      try {
+        // Quick health check: try to get pages
+        await globalBrowser.pages();
+        return globalBrowser;
+      } catch (_) {
+        // Browser crashed — reset and create a new one
+        globalBrowser = null;
+      }
+    }
     globalBrowser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     });
+    return globalBrowser;
   }
 
-  const browser = browserInstance || globalBrowser;
+  const browser = browserInstance || await getOrCreateBrowser();
   const page = await browser.newPage();
 
   await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
@@ -215,6 +226,14 @@ async function generateBatchInvoicePDFs(reports, b2bDataMap, offshoreDataMap) {
   const results = [];
   const errors = [];
 
+  // Ensure browser is alive before batch run
+  if (globalBrowser) {
+    try {
+      await globalBrowser.pages();
+    } catch (_) {
+      globalBrowser = null;
+    }
+  }
   if (!globalBrowser) {
     globalBrowser = await puppeteer.launch({
       headless: 'new',
