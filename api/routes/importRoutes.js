@@ -256,10 +256,19 @@ router.post('/confirm', upload.single('file'), (req, res) => {
       WHERE report_id = ?
     `);
 
+    const deleteB2b = db.prepare(`DELETE FROM b2b_services_data WHERE report_id = ?`);
+    const deleteOffshore = db.prepare(`DELETE FROM offshore_services_data WHERE report_id = ?`);
+    const deleteInvoice = db.prepare(`DELETE FROM invoices WHERE report_id = ?`);
+
     for (const report_id of parsed.reportsToCreate) {
       const meta = parsed.reportDataMap.get(report_id);
       insertReport.run(report_id, meta.branch_id, meta.report_month_id, meta.report_month_id, meta.has_b2b, meta.has_offshore);
       updateReportFlags.run(meta.has_b2b, meta.has_offshore, report_id);
+      
+      // Clear old data for this report so re-imports do not duplicate items
+      deleteB2b.run(report_id);
+      deleteOffshore.run(report_id);
+      deleteInvoice.run(report_id);
     }
 
     // 3. Insert B2B
