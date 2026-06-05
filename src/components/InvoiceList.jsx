@@ -145,14 +145,27 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                       >
                         Preview
                       </button>
-                      <a 
-                        href={`${API}/api/invoices/generate/${invoice.report_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-primary"
-                      >
-                        PDF
-                      </a>
+                      {(invoice.invoice_type === 'b2b' || invoice.invoice_type === 'combined') && (
+                        <a 
+                          href={`${API}/api/invoices/generate/${invoice.report_id}?type=b2b`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-primary"
+                        >
+                          PDF (B2B)
+                        </a>
+                      )}
+                      {(invoice.invoice_type === 'offshore' || invoice.invoice_type === 'combined') && (
+                        <a 
+                          href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-primary"
+                          style={{ backgroundColor: '#0284c7', borderColor: '#0284c7' }}
+                        >
+                          PDF (Offshore)
+                        </a>
+                      )}
                     </div>
                   </td>
                 </tr>

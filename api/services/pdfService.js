@@ -55,7 +55,7 @@ function generatePDFFilename(branchId, monthDisplay) {
 /**
  * Genera PDF profesional para una factura
  */
-async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance = null) {
+async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance = null, invoiceType = 'all') {
   // Read HTML template
   const templatePath = path.join(__dirname, '..', 'templates', 'invoice.html');
   let html = fs.readFileSync(templatePath, 'utf8');
@@ -183,7 +183,7 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   }
 
   // ═══════════════════════════════════════════════════════
-  // GRAND TOTAL (SIN markup)
+  // GRAND TOTAL
   // ═══════════════════════════════════════════════════════
   const grandTotal = totalB2B + totalOffshore;
 
@@ -222,12 +222,6 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   html = html.replace('{{B2B_ROWS}}', b2bHtmlRows);
   html = html.replace('{{OFFSHORE_ROWS}}', offshoreHtmlRows);
 
-  // Totals
-  html = html.replace('{{TOTAL_B2B}}', formatCurrency(totalB2B));
-  html = html.replace('{{TOTAL_OFFSHORE}}', formatCurrency(totalOffshore));
-  html = html.replace('{{TOTAL_MARKUP}}', formatCurrency(totalMarkupWaived));
-  html = html.replace('{{GRAND_TOTAL}}', formatCurrency(grandTotal));
-
   // ═══════════════════════════════════════════════════════
   // GENERATE PDF WITH PUPPETEER
   // ═══════════════════════════════════════════════════════
@@ -265,7 +259,13 @@ async function generateInvoicePDF(report, b2bData, offshoreData, browserInstance
   await page.close();
   // We no longer close the global browser here so it stays hot for the next request
 
-  const filename = generatePDFFilename(report.branch_id, monthDisplay);
+  let filenameBase = generatePDFFilename(report.branch_id, monthDisplay).replace('.pdf', '');
+  if (invoiceType === 'b2b') {
+    filenameBase += '_B2B';
+  } else if (invoiceType === 'offshore') {
+    filenameBase += '_Offshore';
+  }
+  const filename = `${filenameBase}.pdf`;
 
   return {
     buffer: pdfBuffer,

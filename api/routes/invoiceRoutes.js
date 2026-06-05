@@ -22,10 +22,19 @@ router.get('/generate/:report_id', async (req, res) => {
       return res.status(404).json({ ok: false, error: 'Report not found' });
     }
 
-    const b2bData = db.prepare(`SELECT * FROM b2b_services_data WHERE report_id = ?`).all(report_id);
-    const offshoreData = db.prepare(`SELECT * FROM offshore_services_data WHERE report_id = ?`).all(report_id);
+    const type = req.query.type; // 'b2b', 'offshore', or undefined (all)
 
-    const pdfData = await generateInvoicePDF(report, b2bData, offshoreData);
+    let b2bData = [];
+    let offshoreData = [];
+
+    if (!type || type === 'b2b') {
+      b2bData = db.prepare(`SELECT * FROM b2b_services_data WHERE report_id = ?`).all(report_id);
+    }
+    if (!type || type === 'offshore') {
+      offshoreData = db.prepare(`SELECT * FROM offshore_services_data WHERE report_id = ?`).all(report_id);
+    }
+
+    const pdfData = await generateInvoicePDF(report, b2bData, offshoreData, null, type || 'all');
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${pdfData.filename}"`);
