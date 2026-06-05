@@ -568,9 +568,18 @@ async function generateOffshorePNG(report, offshoreData) {
 
   let totalOffshore = 0;
   let totalMarkup = 0;
-  let rowsHtml = '';
+  let rowsHtml = `
+    <tr>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Employee</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Role</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Direct Salary</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Indirect Costs</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Markup</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Effective Cost</th>
+    </tr>
+  `;
 
-  offshoreData.forEach((item, idx) => {
+  offshoreData.forEach(item => {
     const salary = item.mss_direct_salary || 0;
     const costs = item.indirect_costs || 0;
     const markup = item.agency_markup || 0;
@@ -578,24 +587,18 @@ async function generateOffshorePNG(report, offshoreData) {
     totalOffshore += effectiveCost;
     totalMarkup += markup;
 
-    // Agregar un separador si hay múltiples empleados
-    if (idx > 0) {
-      rowsHtml += `<tr><td colspan="2" style="background:#FCFCFA;height:12px;border:none"></td></tr>`;
-    }
-
     rowsHtml += `
-      <tr><td>Issued to</td><td class="value">${report.branch_manager_name || 'N/A'}</td></tr>
-      <tr><td>Branch</td><td class="value">${report.branch_name || 'N/A'}</td></tr>
-      <tr><td>Date</td><td class="value">${report.report_month_display || ''}</td></tr>
-      <tr><td>Employee</td><td class="value">${item.employee_name || 'N/A'}</td></tr>
-      <tr><td>Role</td><td class="value">${item.employee_role || 'N/A'}</td></tr>
-      <tr><td>Direct Salary</td><td class="value">${formatCurrency(salary)}</td></tr>
-      <tr><td>Indirect Costs</td><td class="value">${formatCurrency(costs)}</td></tr>
-      <tr><td>Agency Markup</td><td class="value">
-        <span class="strikethrough">${formatCurrency(markup)}</span>
-        <span class="badge-waived">100% WAIVED</span>
-      </td></tr>
-      <tr><td style="border-bottom:none">Effective Cost</td><td class="value red" style="border-bottom:none">${formatCurrency(effectiveCost)}</td></tr>
+      <tr>
+        <td class="value" style="color:#6B7280">${item.employee_name || 'N/A'}</td>
+        <td class="value">${item.employee_role || 'N/A'}</td>
+        <td class="value">${formatCurrency(salary)}</td>
+        <td class="value">${formatCurrency(costs)}</td>
+        <td class="value">
+          <span class="strikethrough">${formatCurrency(markup)}</span>
+          <span class="badge-waived">100% WAIVED</span>
+        </td>
+        <td class="value red">${formatCurrency(effectiveCost)}</td>
+      </tr>
     `;
   });
 
