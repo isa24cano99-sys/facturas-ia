@@ -139,36 +139,63 @@ export default function InvoiceList({ month, onSelectInvoice, refreshTrigger }) 
                   </td>
                   <td className="text-right">{formatCurrency(invoice.grand_total)}</td>
                   <td>
-                    <div className="action-buttons">
+                    <div className="action-buttons" style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: '140px' }}>
                       <button
                         className="btn btn-sm btn-secondary"
                         onClick={() => onSelectInvoice(invoice)}
+                        style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '6px' }}
                       >
-                        Preview
+                        👁️ Preview
                       </button>
 
                       {(invoice.invoice_type === 'b2b' || invoice.invoice_type === 'combined') && (
-                        <a
-                          href={`${API}/api/invoices/generate/${invoice.report_id}?type=b2b`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-sm btn-primary"
-                          title="Download B2B PDF"
-                        >
-                          B2B PDF
-                        </a>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          <a
+                            href={`${API}/api/invoices/generate/${invoice.report_id}?type=b2b`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm btn-primary"
+                            title="Download B2B PDF"
+                            style={{ flex: 1, padding: '4px', fontSize: '11px', textAlign: 'center' }}
+                          >
+                            B2B PDF
+                          </a>
+                          <a
+                            href={`${API}/api/invoices/generate-png/${invoice.report_id}?type=b2b`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm btn-primary"
+                            title="Download B2B PNG"
+                            style={{ flex: 1, padding: '4px', fontSize: '11px', textAlign: 'center' }}
+                          >
+                            B2B PNG
+                          </a>
+                        </div>
                       )}
 
                       {(invoice.invoice_type === 'offshore' || invoice.invoice_type === 'combined') && (
-                        <a
-                          href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-sm btn-accent"
-                          title="Download Offshore PDF"
-                        >
-                          Offshore PDF
-                        </a>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          <a
+                            href={`${API}/api/invoices/generate/${invoice.report_id}?type=offshore`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm btn-accent"
+                            title="Download Offshore PDF"
+                            style={{ flex: 1, padding: '4px', fontSize: '11px', textAlign: 'center' }}
+                          >
+                            Off PDF
+                          </a>
+                          <a
+                            href={`${API}/api/invoices/generate-png/${invoice.report_id}?type=offshore`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm btn-accent"
+                            title="Download Offshore PNG"
+                            style={{ flex: 1, padding: '4px', fontSize: '11px', textAlign: 'center' }}
+                          >
+                            Off PNG
+                          </a>
+                        </div>
                       )}
                     </div>
                   </td>

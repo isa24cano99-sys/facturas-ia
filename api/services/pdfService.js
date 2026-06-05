@@ -53,7 +53,7 @@ function buildB2bSection(b2bData, report, formatCur) {
   let totalB2B = 0;
   let rows = '';
 
-  b2bData.forEach(function(item) {
+  b2bData.forEach(function (item) {
     const investment = item.monthly_investment || 0;
     const successFee = item.success_fee || '';
     totalB2B += investment;
@@ -89,7 +89,7 @@ function buildOffshoreSection(offshoreData, report, formatCur) {
   let totalMarkup = 0;
   let rows = '';
 
-  offshoreData.forEach(function(item) {
+  offshoreData.forEach(function (item) {
     const salary = item.mss_direct_salary || 0;
     const costs = item.indirect_costs || 0;
     const markup = item.agency_markup || 0;
@@ -283,7 +283,357 @@ async function generateBatchInvoicePDFs(reports, b2bDataMap, offshoreDataMap) {
   return { results, errors };
 }
 
+// ── PNG EXPORT ─────────────────────────────────────────────────────────────
+
+const sharedPNGStyles = `
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Arial', sans-serif;
+    background: #FCFCFA;
+    color: #001A40;
+    padding: 0;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 632px;
+  }
+  .header {
+    background: #001A40;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .brand-name {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .brand-tag {
+    color: #A6DEFF;
+    font-size: 10px;
+    margin-top: 2px;
+  }
+  .header-right {
+    color: white;
+    text-align: right;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .header-right strong {
+    font-size: 12px;
+  }
+  .accent-line {
+    height: 3px;
+    background: #FF4040;
+  }
+  .content {
+    padding: 24px;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #001A40;
+    border-left: 3px solid #FF4040;
+    padding-left: 10px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .section-subtitle {
+    font-size: 12px;
+    color: #6B7280;
+    padding-left: 13px;
+    margin-bottom: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  td, th {
+    padding: 10px 12px;
+    border-bottom: 1px solid #E5E7EB;
+  }
+  td:first-child {
+    color: #6B7280;
+  }
+  td.value {
+    color: #001A40;
+    font-weight: bold;
+  }
+  td.value.red {
+    color: #FF4040;
+  }
+  .badge-waived {
+    background: #FF4040;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: bold;
+    margin-left: 6px;
+  }
+  .strikethrough {
+    text-decoration: line-through;
+    color: #6B7280;
+  }
+  .totals-bar {
+    border-top: 2px solid #FF4040;
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+  }
+  .total-label {
+    color: #001A40;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .total-value {
+    color: #FF4040;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .footer {
+    border-top: 1px solid #E5E7EB;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: #6B7280;
+    background: #fff;
+  }
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+</style>
+`;
+
+const logoSvg = `<svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+  <rect width="28" height="28" rx="6" fill="#FF4040"/>
+  <path d="M5 18l9-8 9 8M7.5 16l6.5-6 6.5 6M10 14l4-3.5 4 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+async function captureCardPNG(htmlContent) {
+  let browser = globalBrowser;
+  if (!browser) {
+    browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    });
+    globalBrowser = browser;
+  } else {
+    try {
+      await browser.pages();
+    } catch (_) {
+      browser = await puppeteer.launch({
+        headless: 'new',
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      });
+      globalBrowser = browser;
+    }
+  }
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 680, height: 1, deviceScaleFactor: 2 });
+  await page.setContent(htmlContent, { waitUntil: 'load' });
+  await page.evaluate(() => document.body.style.padding = '24px');
+  const element = await page.$('.card');
+  const buffer = await element.screenshot({ type: 'png' });
+  await page.close();
+  return buffer;
+}
+
+function buildPNGHeader(report, title) {
+  return `
+  <div class="header">
+    <div class="header-brand">
+      ${logoSvg}
+      <div class="brand-text">
+        <span class="brand-name">HOMESÍ</span>
+        <span class="brand-tag">Powered by Supreme Lending</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div style="color:#A6DEFF;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;font-size:9px;">${title}</div>
+      <div><strong>${report.branch_name || 'N/A'}</strong></div>
+      <div>${report.report_month_display || ''}</div>
+    </div>
+  </div>
+  <div class="accent-line"></div>
+  `;
+}
+
+function buildPNGFooter() {
+  return `
+  <div class="footer">
+    <div class="footer-left">
+      ${logoSvg}
+      <span>homesidivision.com &bull; @homesidivision</span>
+    </div>
+    <div>${logoSvg}</div>
+  </div>
+  `;
+}
+
+async function generateB2bPNG(report, b2bData) {
+  if (!b2bData || b2bData.length === 0) return null;
+
+  const monthDisplay = formatMonthDisplay(report.report_month_display);
+  const safeBranchId = String(report.branch_id || '').replace(/[^a-zA-Z0-9]/g, '_');
+  const filename = `HOM_${safeBranchId}_${(monthDisplay || '').replace(/ /g, '_')}_B2B.png`;
+
+  let totalB2B = 0;
+  let rowsHtml = '';
+
+  b2bData.forEach((item, idx) => {
+    const investment = item.monthly_investment || 0;
+    const successFee = item.success_fee || '';
+    totalB2B += investment;
+
+    // Add separator if multiple items
+    if (idx > 0) {
+      rowsHtml += `<tr><td colspan="2" style="background:#FCFCFA;height:12px;"></td></tr>`;
+    }
+
+    rowsHtml += `
+      <tr><td>Issued to</td><td class="value">${report.branch_manager_name || 'N/A'}</td></tr>
+      <tr><td>Branch</td><td class="value">${report.branch_name || 'N/A'}</td></tr>
+      <tr><td>Date</td><td class="value">${report.report_month_display || ''}</td></tr>
+      <tr><td>Service</td><td class="value">${item.service_name || 'B2B Service'}</td></tr>
+      <tr><td>Monthly Investment</td><td class="value red">${formatCurrency(investment)} / month</td></tr>
+      <tr><td style="border-bottom:none">Success Fee</td><td class="value" style="border-bottom:none">${successFee}</td></tr>
+    `;
+  });
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      ${sharedPNGStyles}
+    </head>
+    <body>
+      <div class="card">
+        ${buildPNGHeader(report, 'Pricing & Performance Report')}
+        <div class="content">
+          <div class="section-title">Strategic Investment Confirmation</div>
+          <div class="section-subtitle">B2B System Engine &middot; Full Package</div>
+          <table>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+          <div class="totals-bar">
+            <span class="total-label">B2B Total:</span>
+            <span class="total-value">${formatCurrency(totalB2B)}</span>
+          </div>
+        </div>
+        ${buildPNGFooter()}
+      </div>
+    </body>
+    </html>
+  `;
+
+  const buffer = await captureCardPNG(html);
+  return { buffer, filename, type: 'b2b' };
+}
+
+async function generateOffshorePNG(report, offshoreData) {
+  if (!offshoreData || offshoreData.length === 0) return null;
+
+  const monthDisplay = formatMonthDisplay(report.report_month_display);
+  const safeBranchId = String(report.branch_id || '').replace(/[^a-zA-Z0-9]/g, '_');
+  const filename = `HOM_${safeBranchId}_${(monthDisplay || '').replace(/ /g, '_')}_Offshore.png`;
+
+  let totalOffshore = 0;
+  let totalMarkup = 0;
+  let rowsHtml = `
+    <tr>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Employee</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Role</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Direct Salary</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Indirect Costs</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Markup</th>
+      <th style="text-align:left;color:#6B7280;font-weight:normal">Effective Cost</th>
+    </tr>
+  `;
+
+  offshoreData.forEach(item => {
+    const salary = item.mss_direct_salary || 0;
+    const costs = item.indirect_costs || 0;
+    const markup = item.agency_markup || 0;
+    const effectiveCost = salary + costs;
+    totalOffshore += effectiveCost;
+    totalMarkup += markup;
+
+    rowsHtml += `
+      <tr>
+        <td class="value" style="color:#6B7280">${item.employee_name || 'N/A'}</td>
+        <td class="value">${item.employee_role || 'N/A'}</td>
+        <td class="value">${formatCurrency(salary)}</td>
+        <td class="value">${formatCurrency(costs)}</td>
+        <td class="value">
+          <span class="strikethrough">${formatCurrency(markup)}</span>
+          <span class="badge-waived">100% WAIVED</span>
+        </td>
+        <td class="value red">${formatCurrency(effectiveCost)}</td>
+      </tr>
+    `;
+  });
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      ${sharedPNGStyles}
+    </head>
+    <body>
+      <div class="card">
+        ${buildPNGHeader(report, 'Offshore Performance Report')}
+        <div class="content">
+          <div class="section-title">Offshore Services</div>
+          <div class="section-subtitle">Branch ${report.branch_id} &middot; All team members</div>
+          <table>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+          <div class="totals-bar">
+            <span style="color:#6B7280;font-size:12px;margin-right:auto;">
+              Markup Waived: <span class="strikethrough">${formatCurrency(totalMarkup)}</span>
+            </span>
+            <span class="total-label">Offshore Total:</span>
+            <span class="total-value">${formatCurrency(totalOffshore)}</span>
+          </div>
+        </div>
+        ${buildPNGFooter()}
+      </div>
+    </body>
+    </html>
+  `;
+
+  const buffer = await captureCardPNG(html);
+  return { buffer, filename, type: 'offshore' };
+}
+
 module.exports = {
   generateInvoicePDF,
-  generateBatchInvoicePDFs
+  generateBatchInvoicePDFs,
+  generateB2bPNG,
+  generateOffshorePNG
 };

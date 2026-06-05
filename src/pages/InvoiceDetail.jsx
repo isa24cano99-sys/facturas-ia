@@ -154,8 +154,12 @@ export default function InvoiceDetail() {
     );
   };
 
-  const handleDownloadPDF = () => {
-    window.open(`${API}/api/invoices/generate/${report_id}`, '_blank');
+  const handleDownloadPDF = (type) => {
+    window.open(`${API}/api/invoices/generate/${report_id}?type=${type}`, '_blank');
+  };
+
+  const handleDownloadPNG = (type) => {
+    window.open(`${API}/api/invoices/generate-png/${report_id}?type=${type}`, '_blank');
   };
 
   const formatCurrency = (amount) => {
@@ -174,11 +178,28 @@ export default function InvoiceDetail() {
           <h2>Invoice Details</h2>
           <p style={{ color: 'var(--text-muted)' }}>{formatMonthDisplay(report.report_month_display)} - {report.branch_name}</p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Link to="/" className="btn btn-secondary">Back</Link>
-          <button onClick={handleDownloadPDF} className="btn btn-primary">
-            📄 Generate PDF
-          </button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link to="/" className="btn btn-secondary" style={{ padding: '0.6rem 1rem' }}>Back</Link>
+          
+          <div style={{ display: 'flex', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ padding: '0.6rem 1rem', background: 'var(--primary-color)', borderRight: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>B2B</div>
+            <button onClick={() => handleDownloadPDF('b2b')} className="btn btn-primary" style={{ borderRadius: 0, border: 'none', padding: '0.6rem 1rem' }}>
+              📄 PDF
+            </button>
+            <button onClick={() => handleDownloadPNG('b2b')} className="btn btn-primary" style={{ borderRadius: 0, border: 'none', borderLeft: '1px solid rgba(255,255,255,0.2)', padding: '0.6rem 1rem' }}>
+              🖼️ PNG
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ padding: '0.6rem 1rem', background: '#e0a816', color: '#001A40', borderRight: '1px solid rgba(255,255,255,0.2)', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>Offshore</div>
+            <button onClick={() => handleDownloadPDF('offshore')} className="btn btn-accent" style={{ borderRadius: 0, border: 'none', padding: '0.6rem 1rem' }}>
+              📄 PDF
+            </button>
+            <button onClick={() => handleDownloadPNG('offshore')} className="btn btn-accent" style={{ borderRadius: 0, border: 'none', borderLeft: '1px solid rgba(0,26,64,0.1)', padding: '0.6rem 1rem' }}>
+              🖼️ PNG
+            </button>
+          </div>
         </div>
       </div>
 

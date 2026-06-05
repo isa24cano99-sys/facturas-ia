@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { generateInvoicePDF, generateBatchInvoicePDFs } = require('../services/pdfService');
+const { generateInvoicePDF, generateBatchInvoicePDFs, generateB2bPNG, generateOffshorePNG } = require('../services/pdfService');
 const archiver = require('archiver');
 
 // Individual PDF Generation — supports ?type=b2b or ?type=offshore
@@ -34,6 +34,48 @@ router.get('/generate/:report_id', async (req, res) => {
 
   } catch (err) {
     console.error('PDF Generation Error:', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Individual PNG Generation — supports ?type=b2b or ?type=offshore
+router.get('/generate-png/:report_id', async (req, res) => {
+  try {
+    const db = req.app.get('db');
+    const report_id = req.params.report_id;
+    const type = req.query.type || 'b2b';
+
+    const report = db.prepare(`
+      SELECT r.*, b.branch_name, b.county, b.state, b.branch_manager_name, b.branch_manager_email
+      FROM monthly_reports r
+      JOIN branches b ON r.branch_id = b.branch_id
+      WHERE r.report_id = ?
+    `).get(report_id);
+
+    if (!report) {
+      return res.status(404).json({ ok: false, error: 'Report not found' });
+    }
+
+    const b2bData = db.prepare(`SELECT * FROM b2b_services_data WHERE report_id = ?`).all(report_id);
+    const offshoreData = db.prepare(`SELECT * FROM offshore_services_data WHERE report_id = ?`).all(report_id);
+
+    let pngData;
+    if (type === 'b2b') {
+      pngData = await generateB2bPNG(report, b2bData);
+    } else if (type === 'offshore') {
+      pngData = await generateOffshorePNG(report, offshoreData);
+    }
+
+    if (!pngData) {
+      return res.status(400).json({ ok: false, error: `No ${type} data available for this report` });
+    }
+
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Disposition', `attachment; filename="${pngData.filename}"`);
+    res.send(pngData.buffer);
+
+  } catch (err) {
+    console.error('PNG Generation Error:', err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
