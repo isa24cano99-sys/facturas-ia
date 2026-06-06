@@ -301,7 +301,7 @@ const sharedPNGStyles = `
     border: 1px solid #E5E7EB;
     border-radius: 12px;
     overflow: hidden;
-    width: 632px;
+    width: 780px;
   }
   .header {
     background: #001A40;
@@ -377,6 +377,8 @@ const sharedPNGStyles = `
   td.value {
     color: #001A40;
     font-weight: bold;
+    word-break: break-word;
+    max-width: 450px;
   }
   td.value.red {
     color: #FF4040;
@@ -389,6 +391,8 @@ const sharedPNGStyles = `
     font-size: 9px;
     font-weight: bold;
     margin-left: 6px;
+    display: inline-block;
+    white-space: nowrap;
   }
   .strikethrough {
     text-decoration: line-through;
@@ -458,7 +462,7 @@ async function captureCardPNG(htmlContent) {
   }
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 680, height: 1, deviceScaleFactor: 2 });
+  await page.setViewport({ width: 850, height: 1, deviceScaleFactor: 2 });
   await page.setContent(htmlContent, { waitUntil: 'load' });
   await page.evaluate(() => document.body.style.padding = '24px');
   const element = await page.$('.card');
