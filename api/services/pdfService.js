@@ -87,7 +87,14 @@ function buildOffshoreSection(offshoreData, report, formatCur) {
   if (!offshoreData || offshoreData.length === 0) return '';
   let totalOffshore = 0;
   let totalMarkup = 0;
-  let rows = '';
+  let rows = '<tr>'
+    + '<th>Employee</th>'
+    + '<th>Role</th>'
+    + '<th>Direct Salary</th>'
+    + '<th>Indirect Costs</th>'
+    + '<th>Markup</th>'
+    + '<th>Effective Cost</th>'
+    + '</tr>';
 
   offshoreData.forEach(function (item) {
     const salary = item.mss_direct_salary || 0;
@@ -97,29 +104,24 @@ function buildOffshoreSection(offshoreData, report, formatCur) {
     totalOffshore += effectiveCost;
     totalMarkup += markup;
 
-    rows += '<div class="data-card">';
-    rows += '<table>';
-    rows += '<tbody>';
-    rows += '<tr><td class="cell-label">Issued to</td><td class="cell-value">' + (report.branch_manager_name || 'N/A') + '</td></tr>';
-    rows += '<tr><td class="cell-label">Branch</td><td class="cell-value">' + (report.branch_name || 'N/A') + '</td></tr>';
-    rows += '<tr><td class="cell-label">Date</td><td class="cell-value">' + (report.report_month_display || '') + '</td></tr>';
-    rows += '<tr><td class="cell-label">Employee</td><td class="cell-value">' + (item.employee_name || 'N/A') + '</td></tr>';
-    rows += '<tr><td class="cell-label">Role</td><td class="cell-value">' + (item.employee_role || 'N/A') + '</td></tr>';
-    rows += '<tr><td class="cell-label">Direct Salary</td><td class="cell-value">' + formatCur(salary) + '</td></tr>';
-    rows += '<tr><td class="cell-label">Indirect Costs</td><td class="cell-value">' + formatCur(costs) + '</td></tr>';
-    rows += '<tr><td class="cell-label">Agency Markup</td><td class="cell-value">'
+    rows += '<tr>';
+    rows += '<td class="cell-value muted">' + (item.employee_name || 'N/A') + '</td>';
+    rows += '<td class="cell-value">' + (item.employee_role || 'N/A') + '</td>';
+    rows += '<td class="cell-value">' + formatCur(salary) + '</td>';
+    rows += '<td class="cell-value">' + formatCur(costs) + '</td>';
+    rows += '<td class="cell-value">'
       + '<span class="strikethrough">' + formatCur(markup) + '</span>'
       + '<span class="badge-waived">100% WAIVED</span>'
-      + '</td></tr>';
-    rows += '<tr><td class="cell-label">Effective Cost</td><td class="cell-value accent">' + formatCur(effectiveCost) + '</td></tr>';
-    rows += '</tbody></table></div>';
+      + '</td>';
+    rows += '<td class="cell-value accent">' + formatCur(effectiveCost) + '</td>';
+    rows += '</tr>';
   });
 
   const section = '<div class="section-header">'
     + '<h2>Offshore Services</h2>'
-    + '<div class="section-subtitle">Dedicated Talent Acquisition &amp; Management</div>'
+    + '<div class="section-subtitle">Branch ' + (report.branch_id || 'N/A') + ' &middot; All team members</div>'
     + '</div>'
-    + rows
+    + '<div class="data-card offshore-table-card"><table><tbody>' + rows + '</tbody></table></div>'
     + '<div class="section-total">'
     + '<p class="markup-note">Markup Waived: <span class="strikethrough">' + formatCur(totalMarkup) + '</span></p>'
     + '<p class="total-label">Offshore Total</p>'
@@ -428,9 +430,11 @@ const sharedPNGStyles = `
 </style>
 `;
 
-const logoSvg = `<svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-  <rect width="28" height="28" rx="6" fill="#FF4040"/>
-  <path d="M5 18l9-8 9 8M7.5 16l6.5-6 6.5 6M10 14l4-3.5 4 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+const logoSvg = `<svg width="28" height="28" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="90" height="90" rx="21" fill="#FF443F"/>
+  <path d="M25 48L51 33L77 48" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25 64L51 49L77 64" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M39 78L51 71L63 78" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
 async function captureCardPNG(htmlContent) {
@@ -463,7 +467,7 @@ async function captureCardPNG(htmlContent) {
   return buffer;
 }
 
-function buildPNGHeader(report, title) {
+function buildPNGHeader(report) {
   return `
   <div class="header">
     <div class="header-brand">
@@ -474,7 +478,6 @@ function buildPNGHeader(report, title) {
       </div>
     </div>
     <div class="header-right">
-      <div style="color:#A6DEFF;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;font-size:9px;">${title}</div>
       <div><strong>${report.branch_name || 'N/A'}</strong></div>
       <div>${report.report_month_display || ''}</div>
     </div>
@@ -533,7 +536,7 @@ async function generateB2bPNG(report, b2bData) {
     </head>
     <body>
       <div class="card">
-        ${buildPNGHeader(report, 'Pricing & Performance Report')}
+        ${buildPNGHeader(report)}
         <div class="content">
           <div class="section-title">Strategic Investment Confirmation</div>
           <div class="section-subtitle">B2B System Engine &middot; Full Package</div>
@@ -606,7 +609,7 @@ async function generateOffshorePNG(report, offshoreData) {
     </head>
     <body>
       <div class="card">
-        ${buildPNGHeader(report, 'Offshore Performance Report')}
+        ${buildPNGHeader(report)}
         <div class="content">
           <div class="section-title">Offshore Services</div>
           <div class="section-subtitle">Branch ${report.branch_id} &middot; All team members</div>

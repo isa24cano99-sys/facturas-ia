@@ -232,6 +232,39 @@
       color: var(--red);
     }
 
+    .offshore-table-card table {
+      table-layout: fixed;
+      font-size: 11px;
+    }
+
+    .offshore-table-card th {
+      color: var(--muted);
+      font-weight: 400;
+      text-align: left;
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .offshore-table-card td {
+      padding: 12px 10px;
+      vertical-align: middle;
+    }
+
+    .offshore-table-card .cell-value {
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .offshore-table-card .cell-value.muted {
+      color: var(--muted);
+    }
+
+    .offshore-table-card .badge-waived {
+      margin-left: 0;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
     /* ── Waived badge ────────────────────────────── */
     .badge-waived {
       background: var(--red);
@@ -322,11 +355,12 @@
     <!-- Left: Logomark + Brand -->
     <div class="header-brand">
       <!-- HOMESÍ SVG logomark -->
-      <svg width="44" height="44" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="36" height="36" rx="8" fill="#FF4040" />
-        <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <svg width="44" height="44" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="90" height="90" rx="21" fill="#FF443F" />
+          <path d="M25 48L51 33L77 48" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M25 64L51 49L77 64" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M39 78L51 71L63 78" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       <div class="brand-text-block">
         <span class="brand-name">HOMESÍ</span>
         <span class="brand-tagline">Powered by Supreme Lending</span>
@@ -335,7 +369,6 @@
 
     <!-- Right: Report details -->
     <div class="header-right">
-      <p class="report-label">Pricing &amp; Performance Report</p>
       <table>
         <tr>
           <td>Invoice Number:</td>
@@ -385,18 +418,20 @@
     <!-- FOOTER -->
     <div class="footer">
       <div class="footer-left">
-        <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" rx="8" fill="#FF4040" />
-          <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" />
+        <svg width="24" height="24" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="90" height="90" rx="21" fill="#FF443F" />
+          <path d="M25 48L51 33L77 48" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M25 64L51 49L77 64" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M39 78L51 71L63 78" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <span>homesidivision.com &nbsp;&bull;&nbsp; @homesidivision</span>
       </div>
       <div class="footer-right">
-        <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" rx="8" fill="#FF4040" />
-          <path d="M11 22l7-6 7 6M13 20l5-4.5 5 4.5M15 18l3-2.5 3 2.5" stroke="white" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" />
+        <svg width="28" height="28" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="90" height="90" rx="21" fill="#FF443F" />
+          <path d="M25 48L51 33L77 48" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M25 64L51 49L77 64" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M39 78L51 71L63 78" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
     </div>

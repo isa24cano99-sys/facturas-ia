@@ -95,38 +95,48 @@ function B2BCard({ item, onSave, invoice }) {
 }
 
 // ── Offshore Card ────────────────────────────────────────────────────────────
-function OffshoreCard({ item, invoice }) {
-  const salary = item.mss_direct_salary || 0;
-  const costs  = item.indirect_costs    || 0;
-  const markup = item.agency_markup     || 0;
-  const effective = salary + costs;
+function OffshoreTable({ items }) {
+  return (
+    <div className="preview-table-card offshore-preview-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Role</th>
+            <th>Direct Salary</th>
+            <th>Indirect Costs</th>
+            <th>Markup</th>
+            <th>Effective Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map(item => {
+            const salary = item.mss_direct_salary || 0;
+            const costs = item.indirect_costs || 0;
+            const markup = item.agency_markup || 0;
+            const effective = salary + costs;
 
-  const rows = [
-    { label: 'Issued to',     value: invoice.branch_manager_name || 'N/A' },
-    { label: 'Branch',        value: invoice.branch_name || 'N/A' },
-    { label: 'Date',          value: invoice.report_month_display || '' },
-    { label: 'Employee',      value: item.employee_name || 'N/A' },
-    { label: 'Role',          value: item.employee_role || 'N/A' },
-    { label: 'Direct Salary', value: fmt(salary) },
-    { label: 'Indirect Costs',value: fmt(costs) },
-    {
-      label: 'Agency Markup',
-      value: (
-        <span>
-          <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', marginRight: 8 }}>
-            {fmt(markup)}
-          </span>
-          <span className="badge-waived">100% WAIVED</span>
-        </span>
-      )
-    },
-    { label: 'Effective Cost', highlight: true, value: fmt(effective) }
-  ];
-
-  return <DataCard rows={rows} />;
+            return (
+              <tr key={item.offshore_data_id}>
+                <td className="muted-cell">{item.employee_name || 'N/A'}</td>
+                <td>{item.employee_role || 'N/A'}</td>
+                <td>{fmt(salary)}</td>
+                <td>{fmt(costs)}</td>
+                <td>
+                  <span className="strikethrough">{fmt(markup)}</span>
+                  <span className="badge-waived">100% WAIVED</span>
+                </td>
+                <td className="amount-cell">{fmt(effective)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-// ── Shared row table card ────────────────────────────────────────────────────
+// Shared row table card
 function DataCard({ rows }) {
   return (
     <div style={{
@@ -273,9 +283,7 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
                   <h3>Offshore Services</h3>
                   <span className="section-title-badge offshore">Offshore</span>
                 </div>
-                {details.offshore.map(item => (
-                  <OffshoreCard key={item.offshore_data_id} item={item} invoice={invoice} />
-                ))}
+                <OffshoreTable items={details.offshore} />
                 <div className="totals-row">
                   <div className="total-item">
                     <label>Offshore Total</label>
@@ -319,3 +327,4 @@ export default function InvoicePreviewModal({ invoice, onClose }) {
     </div>
   );
 }
+

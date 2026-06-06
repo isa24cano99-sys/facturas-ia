@@ -8,12 +8,13 @@ export default function Header() {
     <header className="app-header">
       {/* Brand */}
       <Link to="/" className="header-brand" style={{ textDecoration: 'none' }}>
-        {/* Red rounded-square badge with white chevrons — HOMESÍ logomark */}
+        {/* Orange rounded-square badge with white chevrons — HOMESÍ logomark */}
         <div className="brand-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-               strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="18 15 12 9 6 15" />
-            <polyline points="18 20 12 14 6 20" />
+          <svg viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="6" y="6" width="90" height="90" rx="21" fill="#FF443F" />
+            <path d="M25 48L51 33L77 48" stroke="white" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M25 64L51 49L77 64" stroke="white" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M39 78L51 71L63 78" stroke="white" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <div>
@@ -40,3 +41,4 @@ export default function Header() {
     </header>
   );
 }
+
